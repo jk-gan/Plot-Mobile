@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                 } else {
                     final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
 
-                    dialog.setMessage("Loging in");
+                    dialog.setMessage("Loging in...");
                     dialog.setCancelable(false);
                     dialog.setInverseBackgroundForced(false);
                     dialog.show();

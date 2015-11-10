@@ -3,10 +3,11 @@ package com.example.jkgan.pmot;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-public class FirstActivity extends ActionBarActivity {
+public class FirstActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class FirstActivity extends ActionBarActivity {
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                startActivity(new Intent(FirstActivity.this, RegisterActivity.class));
             }
         });
     }
