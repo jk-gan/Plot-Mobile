@@ -16,6 +16,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -44,8 +45,6 @@ public class LoginActivity extends AppCompatActivity {
         final EditText txtEmail = (EditText) findViewById(R.id.editTextEmail);
         final EditText txtPassword = (EditText) findViewById(R.id.editTextPassword);
         Button btnlogin = (Button) findViewById(R.id.buttonLogin);
-
-
 
         btnlogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,11 +94,11 @@ public class LoginActivity extends AppCompatActivity {
                 // request method is POST
                 // defaultHttpClient
                 DefaultHttpClient httpClient = new DefaultHttpClient();
-                String paramString = URLEncodedUtils.format(params, "utf-8");
-                url += "?" + paramString;
-                url = URLDecoder.decode(url);
+//                String paramString = URLEncodedUtils.format(params, "utf-8");
+//                url += "?" + paramString;
+//                url = URLDecoder.decode(url);
                 HttpPost httpPost = new HttpPost(url);
-//                httpPost.setEntity(new UrlEncodedFormEntity(params));
+                httpPost.setEntity(new UrlEncodedFormEntity(params));
 
                 HttpResponse httpResponse = httpClient.execute(httpPost);
                 HttpEntity httpEntity = httpResponse.getEntity();
@@ -189,7 +188,7 @@ public class LoginActivity extends AppCompatActivity {
 //            String strURL = "http://10.0.2.2:3000/api/v1/auth/login";
 
             // For other device
-            String strURL = "http://pmot-web.192.168.1.5.xip.io/api/v1/auth/login";
+            String strURL = "http://pmot-web.192.168.0.2.xip.io/api/v1/auth/login";
 
                         /*JSONParser objJSONParser = new JSONParser();*/
             final JSONObject jsonObj = makeHttpRequest(strURL, "POST", parameters);

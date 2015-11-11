@@ -30,6 +30,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -160,8 +161,11 @@ public class QRcodeScanner extends AppCompatActivity {
                     String scanResult = sym.getData().trim();
 
                     if(scanResult.contains("Pmot@")) {
-                        String str = scanResult.substring(4);
+                        String str = scanResult.substring(5);
+                        CheckASYNC loginTask = new CheckASYNC();
 
+                        MyApplication appState = ((MyApplication)getApplicationContext());
+                        loginTask.execute(str, appState.getToken());
                     } else
                         showAlertDialog(scanResult);
 
@@ -199,27 +203,23 @@ public class QRcodeScanner extends AppCompatActivity {
                 .show();
     }
 
-    private class LoginASYNC extends AsyncTask<String, Void, JSONObject> {
-
-        ProgressDialog dialog;
-        private LoginASYNC(ProgressDialog dialog) {
-            this.dialog = dialog;
-        }
+    private class CheckASYNC extends AsyncTask<String, Void, JSONObject> {
+        final ProgressDialog dialog = new ProgressDialog(QRcodeScanner.this);
 
         @Override
         protected void onPreExecute() {
-//             new Thread() {
-//                 public void run() {
-//                     runOnUiThread(new Runnable() {
-//                         public void run() {
-//                             dialog.setMessage("Loging in");
-//                             dialog.setCancelable(false);
-//                             dialog.setInverseBackgroundForced(false);
-//                             dialog.show();
-//                         }
-//                     });
-//                 }
-//             }.start();
+             new Thread() {
+                 public void run() {
+                     runOnUiThread(new Runnable() {
+                         public void run() {
+                             dialog.setMessage("Loading...");
+                             dialog.setCancelable(false);
+                             dialog.setInverseBackgroundForced(false);
+                             dialog.show();
+                         }
+                     });
+                 }
+             }.start();
 
 
         }
@@ -239,11 +239,11 @@ public class QRcodeScanner extends AppCompatActivity {
                     // request method is POST
                     // defaultHttpClient
                     DefaultHttpClient httpClient = new DefaultHttpClient();
-                    String paramString = URLEncodedUtils.format(params, "utf-8");
-                    url += "?" + paramString;
-                    url = URLDecoder.decode(url);
+//                    String paramString = URLEncodedUtils.format(params, "utf-8");
+//                    url += "?" + paramString;
+//                    url = URLDecoder.decode(url);
                     HttpPost httpPost = new HttpPost(url);
-//                httpPost.setEntity(new UrlEncodedFormEntity(params));
+                    httpPost.setEntity(new UrlEncodedFormEntity(params));
 
                     HttpResponse httpResponse = httpClient.execute(httpPost);
                     HttpEntity httpEntity = httpResponse.getEntity();
@@ -300,17 +300,17 @@ public class QRcodeScanner extends AppCompatActivity {
         protected JSONObject doInBackground(String... params) {
 
             List<NameValuePair> parameters = new ArrayList<NameValuePair>();
-            parameters.add(new BasicNameValuePair("email", params[0]));
-            parameters.add(new BasicNameValuePair("password", params[1]));
+            parameters.add(new BasicNameValuePair("identity", params[0]));
+            parameters.add(new BasicNameValuePair("token", params[1]));
 
             // For emulator
 //            String strURL = "http://10.0.2.2:3000/api/v1/auth/login";
 
             // For other device
-            String strURL = "http://pmot-web.192.168.1.5.xip.io/api/v1/auth/login";
+            String strURL = "http://pmot-web.192.168.0.2.xip.io/api/v1/shops";
 
                         /*JSONParser objJSONParser = new JSONParser();*/
-            final JSONObject jsonObj = makeHttpRequest(strURL, "POST", parameters);
+            final JSONObject jsonObj = makeHttpRequest(strURL, "GET", parameters);
 
             return jsonObj;
 
@@ -319,23 +319,23 @@ public class QRcodeScanner extends AppCompatActivity {
         @Override
         protected void onPostExecute(JSONObject result){
 
-            String token = null;
-            token = result.optString("token");
+            String shopName = null;
+            shopName = result.optString("name");
 
-            if (!token.equals("")) {
-                final String TOKEN = token;
+            if (!shopName.equals("")) {
+                final String NAME = shopName;
 
                 new Thread() {
                     public void run() {
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 dialog.dismiss();
-                                Intent intent = new Intent(QRcodeScanner.this, MainActivity.class);
-                                intent.putExtra("TOKEN", TOKEN);
+                                Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
+                                intent.putExtra("NAME", NAME);
                                 startActivity(intent);
 
                                 Toast toast;
-                                toast = Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT);
+                                toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);
                                 toast.show();
                             }
                         });
@@ -346,7 +346,7 @@ public class QRcodeScanner extends AppCompatActivity {
             } else {
                 dialog.dismiss();
                 Toast toast;
-                toast = Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT);
+                toast = Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT);
                 toast.show();
             }
         }
