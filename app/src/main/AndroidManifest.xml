@@ -15,9 +15,10 @@
         android:theme="@style/AppTheme" >
         <activity android:name=".LoginActivity" >
         </activity>
-        <activity android:name=".QRcodeScanner" >
-        </activity>
+        <!--<activity android:name=".QRcodeScanner" >-->
+        <!--</activity>-->
         <activity android:name=".MainActivity" >
+
         </activity>
         <activity android:name=".FirstActivity" >
             <intent-filter>
@@ -28,7 +29,8 @@
         </activity>
         <activity android:name=".RegisterActivity" >
         </activity>
-        <activity android:name=".ShopActivity" >
+        <activity android:name=".ShopActivity"
+            android:parentActivityName="com.example.jkgan.pmot.MainActivity">
         </activity>
     </application>
 
