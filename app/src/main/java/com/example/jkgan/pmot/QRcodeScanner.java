@@ -11,11 +11,15 @@ import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
@@ -49,7 +53,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class QRcodeScanner extends AppCompatActivity {
+public class QRcodeScanner extends Fragment {
 
     private Camera mCamera;
     private CameraPreview mPreview;
@@ -61,16 +65,24 @@ public class QRcodeScanner extends AppCompatActivity {
     private boolean barcodeScanned = false;
     private boolean previewing = true;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.qrcode_scanner);
+//    @Override
+//    protected void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//        setContentView(R.layout.qrcode_scanner);
+//
+//        initControls();
+//    }
 
-        initControls();
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.qrcode_scanner,container, false);
+        initControls(rootView);
+        return rootView;
     }
 
-    private void initControls() {
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    private void initControls(View rootView) {
+        super.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         autoFocusHandler = new Handler();
         mCamera = getCameraInstance();
@@ -80,12 +92,12 @@ public class QRcodeScanner extends AppCompatActivity {
         scanner.setConfig(0, Config.X_DENSITY, 3);
         scanner.setConfig(0, Config.Y_DENSITY, 3);
 
-        mPreview = new CameraPreview(QRcodeScanner.this, mCamera, previewCb,
+        mPreview = new CameraPreview(getActivity(), mCamera, previewCb,
                 autoFocusCB);
-        FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
+        FrameLayout preview = (FrameLayout) rootView.findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
 
-        scanButton = (Button) findViewById(R.id.ScanButton);
+        scanButton = (Button) rootView.findViewById(R.id.ScanButton);
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -101,12 +113,12 @@ public class QRcodeScanner extends AppCompatActivity {
     }
 
 
-    @Override
+
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             releaseCamera();
         }
-        return super.onKeyDown(keyCode, event);
+        return getActivity().onKeyDown(keyCode, event);
     }
 
 
@@ -161,11 +173,12 @@ public class QRcodeScanner extends AppCompatActivity {
                     String scanResult = sym.getData().trim();
 
                     if(scanResult.contains("Pmot@")) {
+                        mCamera.release();
                         String str = scanResult.substring(5);
                         CheckASYNC loginTask = new CheckASYNC();
 
-                        MyApplication appState = ((MyApplication)getApplicationContext());
-                        loginTask.execute(str, appState.getToken());
+                        MyApplication appState = ((MyApplication) getActivity().getApplicationContext());
+                        loginTask.execute(str, appState.getUser().getToken());
                     } else
                         showAlertDialog(scanResult);
 
@@ -190,7 +203,7 @@ public class QRcodeScanner extends AppCompatActivity {
 
     private void showAlertDialog(String message) {
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(super.getActivity())
                 .setTitle(getResources().getString(R.string.app_name))
                 .setCancelable(false)
                 .setMessage(message)
@@ -204,13 +217,13 @@ public class QRcodeScanner extends AppCompatActivity {
     }
 
     private class CheckASYNC extends AsyncTask<String, Void, JSONObject> {
-        final ProgressDialog dialog = new ProgressDialog(QRcodeScanner.this);
+        final ProgressDialog dialog = new ProgressDialog(getActivity());
 
         @Override
         protected void onPreExecute() {
              new Thread() {
                  public void run() {
-                     runOnUiThread(new Runnable() {
+                     getActivity().runOnUiThread(new Runnable() {
                          public void run() {
                              dialog.setMessage("Loading...");
                              dialog.setCancelable(false);
@@ -307,7 +320,7 @@ public class QRcodeScanner extends AppCompatActivity {
 //            String strURL = "http://10.0.2.2:3000/api/v1/auth/login";
 
             // For other device
-            String strURL = "http://pmot-web.192.168.0.2.xip.io/api/v1/shops";
+            String strURL = MyApplication.getUrl() + "/shops";
 
                         /*JSONParser objJSONParser = new JSONParser();*/
             final JSONObject jsonObj = makeHttpRequest(strURL, "GET", parameters);
@@ -327,15 +340,28 @@ public class QRcodeScanner extends AppCompatActivity {
 
                 new Thread() {
                     public void run() {
-                        runOnUiThread(new Runnable() {
+                        getActivity().runOnUiThread(new Runnable() {
                             public void run() {
                                 dialog.dismiss();
-                                Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
+                                Intent intent = new Intent(getActivity(), ShopActivity.class);
                                 intent.putExtra("NAME", NAME);
+
+//                                ShopActivity fragment = new ShopActivity();
+//                                android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+//                                fragmentTransaction.replace(R.id.frame, fragment);
+//
+//                                // Remove the tab
+//                                ViewPager viewPager = (ViewPager) getActivity().findViewById(R.id.viewpager);
+//                                TabLayout tabLayout = (TabLayout) getActivity().findViewById(R.id.tabs);
+//                                tabLayout.setVisibility(View.GONE);
+//                                viewPager.setVisibility(View.GONE);
+//
+//                                fragmentTransaction.commit();
+
                                 startActivity(intent);
 
                                 Toast toast;
-                                toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);
+                                toast = Toast.makeText(getActivity().getApplicationContext(), NAME, Toast.LENGTH_SHORT);
                                 toast.show();
                             }
                         });
@@ -346,7 +372,7 @@ public class QRcodeScanner extends AppCompatActivity {
             } else {
                 dialog.dismiss();
                 Toast toast;
-                toast = Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT);
+                toast = Toast.makeText(getActivity().getApplicationContext(), "Failed", Toast.LENGTH_SHORT);
                 toast.show();
             }
         }
