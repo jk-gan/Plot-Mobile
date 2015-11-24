@@ -274,7 +274,7 @@ public class RegisterActivity extends AppCompatActivity {
 //            String strURL = "http://10.0.2.2:3000/api/v1/auth/login";
 
             // For other device
-            String strURL = "http://pmot-web.192.168.0.2.xip.io/api/v1/users/new";
+            String strURL = MyApplication.getUrl() + "/users/new";
 
                         /*JSONParser objJSONParser = new JSONParser();*/
 //            final JSONObject jsonObj = makeHttpRequest(strURL, "POST", parameters);
