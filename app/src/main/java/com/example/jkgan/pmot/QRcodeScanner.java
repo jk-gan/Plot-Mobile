@@ -3,6 +3,7 @@ package com.example.jkgan.pmot;
 /**
  * Created by JKGan on 01/11/2015.
  */
+import android.animation.FloatArrayEvaluator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,10 +12,14 @@ import android.hardware.Camera;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -53,40 +58,46 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class QRcodeScanner extends Fragment {
+public class QRcodeScanner extends AppCompatActivity {
 
     private Camera mCamera;
     private CameraPreview mPreview;
     private Handler autoFocusHandler;
 
-    private Button scanButton;
+    private FloatingActionButton scanButton;
     private ImageScanner scanner;
 
     private boolean barcodeScanned = false;
     private boolean previewing = true;
 
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.qrcode_scanner);
-//
-//        initControls();
-//    }
-
+    private Toolbar toolbar;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.qrcode_scanner,container, false);
-        initControls(rootView);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.qrcode_scanner);
 
-        return rootView;
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        ab.setDisplayHomeAsUpEnabled(true);
+        initControls();
     }
 
-    private void initControls(View rootView) {
-        super.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//        View rootView = inflater.inflate(R.layout.qrcode_scanner,container, false);
+//        initControls(rootView);
+//
+//        return rootView;
+//    }
+
+    private void initControls() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         Toast toast;
-        toast = Toast.makeText(getActivity().getApplicationContext(), "start", Toast.LENGTH_SHORT);
+        toast = Toast.makeText(getApplicationContext(), "start", Toast.LENGTH_SHORT);
         toast.show();
 
         autoFocusHandler = new Handler();
@@ -97,12 +108,12 @@ public class QRcodeScanner extends Fragment {
         scanner.setConfig(0, Config.X_DENSITY, 3);
         scanner.setConfig(0, Config.Y_DENSITY, 3);
 
-        mPreview = new CameraPreview(getActivity(), mCamera, previewCb,
+        mPreview = new CameraPreview(this, mCamera, previewCb,
                 autoFocusCB);
-        FrameLayout preview = (FrameLayout) rootView.findViewById(R.id.cameraPreview);
+        FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
         preview.addView(mPreview);
 
-        scanButton = (Button) rootView.findViewById(R.id.ScanButton);
+        scanButton = (FloatingActionButton) findViewById(R.id.ScanButton);
 
         scanButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -123,7 +134,7 @@ public class QRcodeScanner extends Fragment {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             releaseCamera();
         }
-        return getActivity().onKeyDown(keyCode, event);
+        return onKeyDown(keyCode, event);
     }
 
 
@@ -182,7 +193,7 @@ public class QRcodeScanner extends Fragment {
                         String str = scanResult.substring(5);
                         CheckASYNC loginTask = new CheckASYNC();
 
-                        MyApplication appState = ((MyApplication) getActivity().getApplicationContext());
+                        MyApplication appState = ((MyApplication) getApplicationContext());
                         loginTask.execute(str, appState.getUser().getToken());
                     } else
                         showAlertDialog(scanResult);
@@ -208,7 +219,7 @@ public class QRcodeScanner extends Fragment {
 
     private void showAlertDialog(String message) {
 
-        new AlertDialog.Builder(super.getActivity())
+        new AlertDialog.Builder(this)
                 .setTitle(getResources().getString(R.string.app_name))
                 .setCancelable(false)
                 .setMessage(message)
@@ -222,13 +233,13 @@ public class QRcodeScanner extends Fragment {
     }
 
     private class CheckASYNC extends AsyncTask<String, Void, JSONObject> {
-        final ProgressDialog dialog = new ProgressDialog(getActivity());
+        final ProgressDialog dialog = new ProgressDialog(QRcodeScanner.this);
 
         @Override
         protected void onPreExecute() {
              new Thread() {
                  public void run() {
-                     getActivity().runOnUiThread(new Runnable() {
+                     runOnUiThread(new Runnable() {
                          public void run() {
                              dialog.setMessage("Loading...");
                              dialog.setCancelable(false);
@@ -275,10 +286,10 @@ public class QRcodeScanner extends Fragment {
 
                 new Thread() {
                     public void run() {
-                        getActivity().runOnUiThread(new Runnable() {
+                        runOnUiThread(new Runnable() {
                             public void run() {
                                 dialog.dismiss();
-                                Intent intent = new Intent(getActivity(), ShopActivity.class);
+                                Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
                                 intent.putExtra("NAME", NAME);
                                 intent.putExtra("SHOP_ID", SHOP_ID);
 
@@ -297,7 +308,7 @@ public class QRcodeScanner extends Fragment {
                                 startActivity(intent);
 
                                 Toast toast;
-                                toast = Toast.makeText(getActivity().getApplicationContext(), NAME, Toast.LENGTH_SHORT);
+                                toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);
                                 toast.show();
                             }
                         });
@@ -308,7 +319,7 @@ public class QRcodeScanner extends Fragment {
             } else {
                 dialog.dismiss();
                 Toast toast;
-                toast = Toast.makeText(getActivity().getApplicationContext(), "Failed", Toast.LENGTH_SHORT);
+                toast = Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_SHORT);
                 toast.show();
             }
         }

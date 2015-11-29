@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFragment(new OneFragment(), "ONE");
-        adapter.addFragment(new QRcodeScanner(), "Scanner");
+        adapter.addFragment(new TwoFragment(), "TWO");
         viewPager.setAdapter(adapter);
     }
 

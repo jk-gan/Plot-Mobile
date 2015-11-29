@@ -32,6 +32,8 @@
             android:parentActivityName=".MainActivity"></activity>
         <activity android:name=".SubscribeShopsActivity"
             android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".QRcodeScanner"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>
