@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -35,12 +37,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import Http.HttpRequest;
+import person.User;
+
 public class LoginActivity extends AppCompatActivity {
+
+    protected User user = new User();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        final TextInputLayout emailWrapper = (TextInputLayout) findViewById(R.id.emailWrapper);
+        final TextInputLayout passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
+
+        emailWrapper.setHint("Email");
+        passwordWrapper.setHint("Password");
 
         final EditText txtEmail = (EditText) findViewById(R.id.editTextEmail);
         final EditText txtPassword = (EditText) findViewById(R.id.editTextPassword);
@@ -65,146 +78,56 @@ public class LoginActivity extends AppCompatActivity {
                     }.start();
 
                 } else {
-                    final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
 
-                    dialog.setMessage("Loging in...");
-                    dialog.setCancelable(false);
-                    dialog.setInverseBackgroundForced(false);
-                    dialog.show();
-
-                    LoginASYNC loginTask = new LoginASYNC(dialog);
+                    LoginASYNC loginTask = new LoginASYNC();
                     loginTask.execute(email, password);
                 }
             }
         });
     }
 
-    public JSONObject makeHttpRequest(String url, String method,
-                                      List<NameValuePair> params) {
-
-        InputStream is = null;
-        String json = "";
-        JSONObject jObj = null;
-
-        // Making HTTP request
-        try {
-
-            // check for request method
-            if (method.equals("POST")) {
-                // request method is POST
-                // defaultHttpClient
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-//                String paramString = URLEncodedUtils.format(params, "utf-8");
-//                url += "?" + paramString;
-//                url = URLDecoder.decode(url);
-                HttpPost httpPost = new HttpPost(url);
-                httpPost.setEntity(new UrlEncodedFormEntity(params));
-
-                HttpResponse httpResponse = httpClient.execute(httpPost);
-                HttpEntity httpEntity = httpResponse.getEntity();
-                is = httpEntity.getContent();
-
-            } else if (method.equals("GET")) {
-                // request method is GET
-                DefaultHttpClient httpClient = new DefaultHttpClient();
-                String paramString = URLEncodedUtils.format(params, "utf-8");
-                url += "?" + paramString;
-                url = URLDecoder.decode(url);
-                HttpGet httpGet = new HttpGet(url);
-
-                HttpResponse httpResponse = httpClient.execute(httpGet);
-                HttpEntity httpEntity = httpResponse.getEntity();
-                is = httpEntity.getContent();
-            }
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    is, "iso-8859-1"), 8);
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-            is.close();
-            json = sb.toString();
-        } catch (Exception e) {
-            //Log.e("Buffer Error", "Error converting result " + e.toString());
-        }
-
-        // try parse the string to a JSON object
-        try {
-            jObj = new JSONObject(json);
-        } catch (JSONException e) {
-            // Log.e("JSON Parser", "Error parsing data " + e.toString());
-        }
-
-        // return JSON String
-        return jObj;
-
-    }
-
-
      private class LoginASYNC extends AsyncTask<String, Void, JSONObject> {
 
-         ProgressDialog dialog;
-         private LoginASYNC(ProgressDialog dialog) {
-             this.dialog = dialog;
-         }
+         final ProgressDialog dialog = new ProgressDialog(LoginActivity.this);
 
          @Override
          protected void onPreExecute() {
-//             new Thread() {
-//                 public void run() {
-//                     runOnUiThread(new Runnable() {
-//                         public void run() {
-//                             dialog.setMessage("Loging in");
-//                             dialog.setCancelable(false);
-//                             dialog.setInverseBackgroundForced(false);
-//                             dialog.show();
-//                         }
-//                     });
-//                 }
-//             }.start();
-
+             dialog.setMessage("Loging in...");
+             dialog.setCancelable(false);
+             dialog.setInverseBackgroundForced(false);
+             dialog.show();
 
          }
 
         @Override
         protected JSONObject doInBackground(String... params) {
 
-            List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+            final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
             parameters.add(new BasicNameValuePair("email", params[0]));
             parameters.add(new BasicNameValuePair("password", params[1]));
+            String strURL = MyApplication.getUrl() + "/auth/login";
+            HttpRequest request = new HttpRequest();
 
-            // For emulator
-//            String strURL = "http://10.0.2.2:3000/api/v1/auth/login";
-
-            // For other device
-            String strURL = "http://pmot-web.192.168.0.2.xip.io/api/v1/auth/login";
-
-                        /*JSONParser objJSONParser = new JSONParser();*/
-            final JSONObject jsonObj = makeHttpRequest(strURL, "POST", parameters);
-
-            return jsonObj;
-
+            return request.makeHttpRequest(strURL, "POST", parameters);
         }
 
         @Override
-        protected void onPostExecute(JSONObject result){
+        protected void onPostExecute(JSONObject result) {
 
-            String token = null;
+            String token = "";
             token = result.optString("token");
+            user.setToken(token);
+
+            try {
+                JSONObject userData = result.getJSONObject("user");
+                user.setName(userData.optString("name"));
+                user.setEmail(userData.optString("email"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
 
             if (!token.equals("")) {
-                final String TOKEN = token;
 
                 new Thread() {
                     public void run() {
@@ -212,7 +135,9 @@ public class LoginActivity extends AppCompatActivity {
                             public void run() {
                                 dialog.dismiss();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.putExtra("TOKEN", TOKEN);
+//                                intent.putExtra("TOKEN", TOKEN);
+                                MyApplication myApp = ((MyApplication) getApplicationContext());
+                                myApp.setUser(user);
                                 startActivity(intent);
 
                                 Toast toast;
@@ -222,7 +147,6 @@ public class LoginActivity extends AppCompatActivity {
                         });
                     }
                 }.start();
-
 
             } else {
                 dialog.dismiss();
