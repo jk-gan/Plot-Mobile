@@ -10,7 +10,7 @@ import person.User;
 public class MyApplication extends Application {
 
 //    private final static String url = "http://10.0.2.2:3000/api/v1";
-    private final static String url = "http://192.168.1.164:3000/api/v1";
+    private final static String url = "http://192.168.1.8:3000/api/v1";
     private User user;
 
     public static String getUrl() {

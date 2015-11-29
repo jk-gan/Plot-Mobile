@@ -1,5 +1,6 @@
 package com.example.jkgan.pmot;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
@@ -88,11 +89,23 @@ public class MainActivity extends AppCompatActivity {
 
                     // For rest of the options we just show a toast on click
 
-                    case R.id.starred:
-                        Toast.makeText(getApplicationContext(),"Stared Selected",Toast.LENGTH_SHORT).show();
+                    case R.id.home:
+                        Toast.makeText(getApplicationContext(), "Home Selected", Toast.LENGTH_SHORT).show();
+                        OneFragment fragment1 = new OneFragment();
+                        android.support.v4.app.FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction1.replace(R.id.frame,fragment1);
+
+                        // Remove the tab
+                        tabLayout.setVisibility(View.VISIBLE);
+                        viewPager.setVisibility(View.VISIBLE);
+
+                        fragmentTransaction1.commit();
                         return true;
                     case R.id.sent_mail:
                         Toast.makeText(getApplicationContext(),"Send Selected",Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(MainActivity.this, SubscribeShopsActivity.class);
+//                                intent.putExtra("TOKEN", TOKEN);
+                        startActivity(intent);
                         return true;
                     case R.id.drafts:
                         Toast.makeText(getApplicationContext(),"Drafts Selected",Toast.LENGTH_SHORT).show();

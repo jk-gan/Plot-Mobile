@@ -78,11 +78,16 @@ public class QRcodeScanner extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.qrcode_scanner,container, false);
         initControls(rootView);
+
         return rootView;
     }
 
     private void initControls(View rootView) {
         super.getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
+        Toast toast;
+        toast = Toast.makeText(getActivity().getApplicationContext(), "start", Toast.LENGTH_SHORT);
+        toast.show();
 
         autoFocusHandler = new Handler();
         mCamera = getCameraInstance();
@@ -237,78 +242,6 @@ public class QRcodeScanner extends Fragment {
 
         }
 
-        public JSONObject makeHttpRequest(String url, String method,
-                                          List<NameValuePair> params) {
-
-            InputStream is = null;
-            String json = "";
-            JSONObject jObj = null;
-
-            // Making HTTP request
-            try {
-
-                // check for request method
-                if (method.equals("POST")) {
-                    // request method is POST
-                    // defaultHttpClient
-                    DefaultHttpClient httpClient = new DefaultHttpClient();
-//                    String paramString = URLEncodedUtils.format(params, "utf-8");
-//                    url += "?" + paramString;
-//                    url = URLDecoder.decode(url);
-                    HttpPost httpPost = new HttpPost(url);
-                    httpPost.setEntity(new UrlEncodedFormEntity(params));
-
-                    HttpResponse httpResponse = httpClient.execute(httpPost);
-                    HttpEntity httpEntity = httpResponse.getEntity();
-                    is = httpEntity.getContent();
-
-                } else if (method.equals("GET")) {
-                    // request method is GET
-                    DefaultHttpClient httpClient = new DefaultHttpClient();
-                    String paramString = URLEncodedUtils.format(params, "utf-8");
-                    url += "?" + paramString;
-                    url = URLDecoder.decode(url);
-                    HttpGet httpGet = new HttpGet(url);
-
-                    HttpResponse httpResponse = httpClient.execute(httpGet);
-                    HttpEntity httpEntity = httpResponse.getEntity();
-                    is = httpEntity.getContent();
-                }
-
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (ClientProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(
-                        is, "iso-8859-1"), 8);
-                StringBuilder sb = new StringBuilder();
-                String line = null;
-                while ((line = reader.readLine()) != null) {
-                    sb.append(line + "\n");
-                }
-                is.close();
-                json = sb.toString();
-            } catch (Exception e) {
-                //Log.e("Buffer Error", "Error converting result " + e.toString());
-            }
-
-            // try parse the string to a JSON object
-            try {
-                jObj = new JSONObject(json);
-            } catch (JSONException e) {
-                // Log.e("JSON Parser", "Error parsing data " + e.toString());
-            }
-
-            // return JSON String
-            return jObj;
-
-        }
-
         @Override
         protected JSONObject doInBackground(String... params) {
 
@@ -333,10 +266,12 @@ public class QRcodeScanner extends Fragment {
         protected void onPostExecute(JSONObject result){
 
             String shopName = null;
+            String shopId = null;
             shopName = result.optString("name");
-
+            shopId = result.optString("id");
             if (!shopName.equals("")) {
                 final String NAME = shopName;
+                final String SHOP_ID = shopId;
 
                 new Thread() {
                     public void run() {
@@ -345,6 +280,7 @@ public class QRcodeScanner extends Fragment {
                                 dialog.dismiss();
                                 Intent intent = new Intent(getActivity(), ShopActivity.class);
                                 intent.putExtra("NAME", NAME);
+                                intent.putExtra("SHOP_ID", SHOP_ID);
 
 //                                ShopActivity fragment = new ShopActivity();
 //                                android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -377,6 +313,111 @@ public class QRcodeScanner extends Fragment {
             }
         }
 
+    }
+
+    public JSONObject makeHttpRequest(String url, String method,
+                                      List<NameValuePair> params) {
+
+        InputStream is = null;
+        String json = "";
+        JSONObject jObj = null;
+
+        // Making HTTP request
+        try {
+
+            // check for request method
+            if (method.equals("POST")) {
+                // request method is POST
+                // defaultHttpClient
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+//                    String paramString = URLEncodedUtils.format(params, "utf-8");
+//                    url += "?" + paramString;
+//                    url = URLDecoder.decode(url);
+                HttpPost httpPost = new HttpPost(url);
+                httpPost.setEntity(new UrlEncodedFormEntity(params));
+
+                HttpResponse httpResponse = httpClient.execute(httpPost);
+                HttpEntity httpEntity = httpResponse.getEntity();
+                is = httpEntity.getContent();
+
+            } else if (method.equals("GET")) {
+                // request method is GET
+                DefaultHttpClient httpClient = new DefaultHttpClient();
+                String paramString = URLEncodedUtils.format(params, "utf-8");
+                url += "?" + paramString;
+                url = URLDecoder.decode(url);
+                HttpGet httpGet = new HttpGet(url);
+
+                HttpResponse httpResponse = httpClient.execute(httpGet);
+                HttpEntity httpEntity = httpResponse.getEntity();
+                is = httpEntity.getContent();
+            }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    is, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            json = sb.toString();
+        } catch (Exception e) {
+            //Log.e("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // try parse the string to a JSON object
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            // Log.e("JSON Parser", "Error parsing data " + e.toString());
+        }
+
+        // return JSON String
+        return jObj;
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if(mCamera != null) {
+            mCamera.stopPreview();
+            mCamera.setPreviewCallback(null);
+            mPreview.getHolder().removeCallback(mPreview);
+            mCamera.release();
+            mCamera=null;
+        }
+    }
+//
+    @Override
+    public void onResume(){
+        super.onResume();
+//        try
+//        {
+//            if(mCamera == null) {
+//                mCamera.setPreviewCallback(null);
+//                mCamera = getCameraInstance();
+//                //mCamera.setPreviewCallback(null);
+//                mPreview = new CameraPreview(getActivity(), mCamera, previewCb,
+//                        autoFocusCB);//set preview
+//                FrameLayout preview = (FrameLayout) super.getActivity().findViewById(R.id.cameraPreview);
+//                preview.addView(mPreview);
+//            }
+//
+//        } catch (Exception e){
+////            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+//            e.printStackTrace();
+//        }
     }
 
 }
