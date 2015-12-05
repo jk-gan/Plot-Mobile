@@ -33,6 +33,10 @@ import java.util.Random;
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
+    static int numMessages = 0;
+    static String notificationTitle = "";
+    final int notifyID = new Random().nextInt(9999);
+    NotificationCompat.Builder notificationBuilder = null;
 
     /**
      * Called when message is received.
@@ -71,24 +75,48 @@ public class MyGcmListenerService extends GcmListenerService {
      * @param message GCM message received.
      */
     private void sendNotification(String message, String title) {
+
+
         Intent intent = new Intent(this, MainActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setAutoCancel(true)
-                .setSound(defaultSoundUri)
-                .setContentIntent(pendingIntent);
+
+        if(numMessages >= 1) {
+            notificationTitle += (", " + title);
+
+            notificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle((numMessages + 1) + " new promotions")
+                    .setContentText(notificationTitle)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+
+            notificationBuilder.setContentText(message)
+                    .setNumber(++numMessages);
+
+        } else {
+            notificationBuilder = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle(title)
+                    .setContentText(message)
+                    .setAutoCancel(true)
+                    .setSound(defaultSoundUri)
+                    .setContentIntent(pendingIntent);
+
+            notificationTitle = title;
+            numMessages++;
+//            notificationBuilder.setContentText(message)
+//                    .setNumber(++numMessages);
+        }
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         // On génère un nombre aléatoire pour pouvoir afficher plusieurs notifications
-        notificationManager.notify(new Random().nextInt(9999), notificationBuilder.build());
+        notificationManager.notify(notifyID, notificationBuilder.build());
     }
 }
