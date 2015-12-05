@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
@@ -21,6 +22,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bumptech.glide.Glide;
 import com.example.jkgan.pmot.Http.HttpRequest;
 
 public class ShopActivity extends AppCompatActivity {
@@ -33,7 +35,12 @@ public class ShopActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final String shopId = intent.getStringExtra("SHOP_ID");
         final String shopName = intent.getStringExtra("NAME");
+        final String shopImage = intent.getStringExtra("IMAGE");
         final boolean subscribed = intent.getBooleanExtra("SUBSCRIBED", false);
+
+        ImageView imageView = (ImageView) findViewById(R.id.shopView);
+
+        Glide.with(this).load(MyApplication.getUrl() + shopImage).into(imageView);
 
         // Initializing Toolbar and setting it as the actionbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar1);

@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
@@ -30,7 +32,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
         holder.personName.setText(itemList.get(position).getName());
         holder.personAddress.setText(itemList.get(position).getAddress());
-        holder.personPhoto.setImageResource(itemList.get(position).getPhotoId());
+        Glide.with(context).load(MyApplication.getUrl() + itemList.get(position).getImage()).into(holder.personPhoto);
     }
 
     @Override

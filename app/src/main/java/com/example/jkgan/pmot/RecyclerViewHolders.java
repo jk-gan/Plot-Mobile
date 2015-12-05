@@ -39,6 +39,7 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
                 final Intent intent = new Intent(view.getContext(), ShopActivity.class);
                 intent.putExtra("NAME", shop.getName());
                 intent.putExtra("SHOP_ID", shop.getId());
+                intent.putExtra("IMAGE", shop.getImage());
                 intent.putExtra("SUBSCRIBED", true);
                 view.getContext(). startActivity(intent);
 

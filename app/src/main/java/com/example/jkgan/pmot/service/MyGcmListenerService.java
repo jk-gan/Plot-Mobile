@@ -35,7 +35,7 @@ public class MyGcmListenerService extends GcmListenerService {
     private static final String TAG = "MyGcmListenerService";
     static int numMessages = 0;
     static String notificationTitle = "";
-    final int notifyID = new Random().nextInt(9999);
+    final int notifyID = 1;
     NotificationCompat.Builder notificationBuilder = null;
 
     /**

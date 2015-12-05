@@ -9,12 +9,14 @@ public class Shop {
     private String address;
     private int photoId;
     private String id;
+    private String image;
 
-    public Shop(String name, String address, int photoId, String id) {
+    public Shop(String name, String address, int photoId, String id, String image) {
         this.name = name;
         this.address = address;
         this.photoId = photoId;
         this.id = id;
+        this.image = image;
     }
 
     public String getName() {
@@ -47,5 +49,13 @@ public class Shop {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
