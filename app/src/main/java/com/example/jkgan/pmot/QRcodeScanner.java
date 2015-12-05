@@ -3,7 +3,6 @@ package com.example.jkgan.pmot;
 /**
  * Created by JKGan on 01/11/2015.
  */
-import android.animation.FloatArrayEvaluator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,19 +12,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -264,7 +257,7 @@ public class QRcodeScanner extends AppCompatActivity {
 //            String strURL = "http://10.0.2.2:3000/api/v1/auth/login";
 
             // For other device
-            String strURL = MyApplication.getUrl() + "/shops";
+            String strURL = MyApplication.getApiUrl() + "/shops";
 
                         /*JSONParser objJSONParser = new JSONParser();*/
             final JSONObject jsonObj = makeHttpRequest(strURL, "GET", parameters);
@@ -292,6 +285,7 @@ public class QRcodeScanner extends AppCompatActivity {
                                 Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
                                 intent.putExtra("NAME", NAME);
                                 intent.putExtra("SHOP_ID", SHOP_ID);
+                                intent.putExtra("SUBSCRIBED", false);
 
 //                                ShopActivity fragment = new ShopActivity();
 //                                android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();

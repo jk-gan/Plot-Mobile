@@ -1,4 +1,4 @@
-package Http;
+package com.example.jkgan.pmot.Http;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -10,6 +10,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,6 +99,17 @@ public class HttpRequest {
             jObj = new JSONObject(json);
         } catch (JSONException e) {
             // Log.e("JSON Parser", "Error parsing data " + e.toString());
+            try{
+
+                // TODO Auto-generated method stub
+                JSONArray jsnArr = new JSONArray(json);
+//						jobj = jsnArr.getJSONObject(1);
+                jObj = new JSONObject();
+                jObj.put("Shops", jsnArr);
+
+            } catch (JSONException e1){
+                e.printStackTrace();
+            }
         }
 
         // return JSON String

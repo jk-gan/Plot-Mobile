@@ -1,4 +1,4 @@
-package person;
+package com.example.jkgan.pmot.person;
 
 /**
  * Created by JKGan on 03/11/2015.
