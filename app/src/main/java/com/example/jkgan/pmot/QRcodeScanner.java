@@ -182,7 +182,7 @@ public class QRcodeScanner extends AppCompatActivity {
                     String scanResult = sym.getData().trim();
 
                     if(scanResult.contains("Pmot@")) {
-                        mCamera.release();
+                        releaseCamera();
                         String str = scanResult.substring(5);
                         CheckASYNC loginTask = new CheckASYNC();
 
@@ -395,34 +395,29 @@ public class QRcodeScanner extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if(mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.setPreviewCallback(null);
-            mPreview.getHolder().removeCallback(mPreview);
-            mCamera.release();
-            mCamera=null;
-        }
+        releaseCamera();
     }
 //
     @Override
     public void onResume(){
         super.onResume();
-//        try
-//        {
-//            if(mCamera == null) {
-//                mCamera.setPreviewCallback(null);
-//                mCamera = getCameraInstance();
-//                //mCamera.setPreviewCallback(null);
-//                mPreview = new CameraPreview(getActivity(), mCamera, previewCb,
-//                        autoFocusCB);//set preview
-//                FrameLayout preview = (FrameLayout) super.getActivity().findViewById(R.id.cameraPreview);
-//                preview.addView(mPreview);
-//            }
+        try
+        {
+            if(mCamera == null) {
+                mCamera.setPreviewCallback(null);
+                mPreview.getHolder().removeCallback(mPreview);
+                mCamera = getCameraInstance();
+                //mCamera.setPreviewCallback(null);
+                mPreview = new CameraPreview(this, mCamera, previewCb,
+                        autoFocusCB);//set preview
+                FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
+                preview.addView(mPreview);
+            }
 //
-//        } catch (Exception e){
-////            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
-//            e.printStackTrace();
-//        }
+        } catch (Exception e){
+//            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }

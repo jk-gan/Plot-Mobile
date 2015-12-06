@@ -11,12 +11,17 @@ public class Shop {
     private String id;
     private String image;
 
-    public Shop(String name, String address, int photoId, String id, String image) {
+
+
+    private String smallImage;
+
+    public Shop(String name, String address, int photoId, String id, String image, String smallImage) {
         this.name = name;
         this.address = address;
         this.photoId = photoId;
         this.id = id;
         this.image = image;
+        this.smallImage = smallImage;
     }
 
     public String getName() {
@@ -57,5 +62,13 @@ public class Shop {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getSmallImage() {
+        return smallImage;
+    }
+
+    public void setSmallImage(String smallImage) {
+        this.smallImage = smallImage;
     }
 }

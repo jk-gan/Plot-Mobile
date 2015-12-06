@@ -32,7 +32,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
         holder.personName.setText(itemList.get(position).getName());
         holder.personAddress.setText(itemList.get(position).getAddress());
-        Glide.with(context).load(MyApplication.getUrl() + itemList.get(position).getImage()).into(holder.personPhoto);
+        Glide.with(context).load(MyApplication.getUrl() + itemList.get(position).getSmallImage()).into(holder.personPhoto);
     }
 
     @Override
