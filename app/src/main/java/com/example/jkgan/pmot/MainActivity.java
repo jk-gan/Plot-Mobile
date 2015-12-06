@@ -171,8 +171,15 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.trash:
                         Toast.makeText(getApplicationContext(),"Trash Selected",Toast.LENGTH_SHORT).show();
                         return true;
-                    case R.id.spam:
-                        Toast.makeText(getApplicationContext(),"Spam Selected",Toast.LENGTH_SHORT).show();
+                    case R.id.logout:
+                        SharedPreferences sharedPreferences =
+                                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                        sharedPreferences.edit().putBoolean(LoginActivity.LOGGED_IN, false).apply();
+                        sharedPreferences.edit().putString(LoginActivity.TOKEN, "").apply();
+                        Intent intent = new Intent(MainActivity.this, FirstActivity.class);
+                        startActivity(intent);
+                        finish();
+                        Toast.makeText(getApplicationContext(),"Logout Selected",Toast.LENGTH_SHORT).show();
                         return true;
                     default:
                         Toast.makeText(getApplicationContext(),"Somethings Wrong",Toast.LENGTH_SHORT).show();

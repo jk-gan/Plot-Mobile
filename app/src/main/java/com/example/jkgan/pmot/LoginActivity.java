@@ -2,8 +2,10 @@ package com.example.jkgan.pmot;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,10 +23,13 @@ import java.util.List;
 
 import com.example.jkgan.pmot.Http.HttpRequest;
 import com.example.jkgan.pmot.person.User;
+import com.example.jkgan.pmot.service.QuickstartPreferences;
 
 public class LoginActivity extends AppCompatActivity {
 
     protected User user = new User();
+    public static final String LOGGED_IN = "loggedIN";
+    public static String TOKEN = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,20 +116,23 @@ public class LoginActivity extends AppCompatActivity {
 
             if (!token.equals("")) {
 
+                final String THE_TOKEN = token;
+
                 new Thread() {
                     public void run() {
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 dialog.dismiss();
+                                SharedPreferences sharedPreferences =
+                                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                sharedPreferences.edit().putBoolean(LOGGED_IN, true).apply();
+                                sharedPreferences.edit().putString(TOKEN, THE_TOKEN).apply();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //                                intent.putExtra("TOKEN", TOKEN);
                                 MyApplication myApp = ((MyApplication) getApplicationContext());
                                 myApp.setUser(user);
                                 startActivity(intent);
-
-                                Toast toast;
-                                toast = Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT);
-                                toast.show();
+                                finish();
                             }
                         });
                     }
