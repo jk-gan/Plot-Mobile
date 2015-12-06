@@ -276,16 +276,25 @@ public class QRcodeScanner extends AppCompatActivity {
             if (!shopName.equals("")) {
                 final String NAME = shopName;
                 final String SHOP_ID = shopId;
+                final String SHOP_ADDRESS = result.optString("address");
+                try {
+                    final String SHOP_IMAGE = result.getJSONObject("image").getJSONObject("medium").optString("url");
+                    final String SHOP_PHONE = result.optString("phone");
+                    final String SHOP_DESCRIPTION = result.optString("description");
 
-                new Thread() {
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                dialog.dismiss();
-                                Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
-                                intent.putExtra("NAME", NAME);
-                                intent.putExtra("SHOP_ID", SHOP_ID);
-                                intent.putExtra("SUBSCRIBED", false);
+                    new Thread() {
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    dialog.dismiss();
+                                    Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
+                                    intent.putExtra("NAME", NAME);
+                                    intent.putExtra("ADDRESS", SHOP_ADDRESS);
+                                    intent.putExtra("IMAGE", SHOP_IMAGE);
+                                    intent.putExtra("PHONE", SHOP_PHONE);
+                                    intent.putExtra("DESCRIPTION", SHOP_DESCRIPTION);
+                                    intent.putExtra("SHOP_ID", SHOP_ID);
+                                    intent.putExtra("SUBSCRIBED", false);
 
 //                                ShopActivity fragment = new ShopActivity();
 //                                android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -299,15 +308,21 @@ public class QRcodeScanner extends AppCompatActivity {
 //
 //                                fragmentTransaction.commit();
 
-                                startActivity(intent);
+                                    startActivity(intent);
 
-                                Toast toast;
-                                toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
-                        });
-                    }
-                }.start();
+                                    Toast toast;
+                                    toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            });
+                        }
+                    }.start();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
 
 
             } else {

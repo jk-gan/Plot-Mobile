@@ -7,21 +7,20 @@ public class Shop {
 
     private String name;
     private String address;
-    private int photoId;
     private String id;
     private String image;
-
-
-
+    private String phone;
+    private String description;
     private String smallImage;
 
-    public Shop(String name, String address, int photoId, String id, String image, String smallImage) {
+    public Shop(String name, String address, String id, String image, String smallImage, String phone, String description) {
         this.name = name;
         this.address = address;
-        this.photoId = photoId;
         this.id = id;
         this.image = image;
         this.smallImage = smallImage;
+        this.phone = phone;
+        this.description = description;
     }
 
     public String getName() {
@@ -38,14 +37,6 @@ public class Shop {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public int getPhotoId() {
-        return photoId;
-    }
-
-    public void setPhotoId(int photoId) {
-        this.photoId = photoId;
     }
 
     public String getId() {
@@ -70,5 +61,21 @@ public class Shop {
 
     public void setSmallImage(String smallImage) {
         this.smallImage = smallImage;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

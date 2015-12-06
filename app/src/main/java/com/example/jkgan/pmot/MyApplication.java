@@ -9,7 +9,7 @@ import com.example.jkgan.pmot.person.User;
  */
 public class MyApplication extends Application {
 
-    //    private final static String apiUrl = "http://10.0.2.2:3000/api/v1";
+//        private final static String apiUrl = "http://10.0.2.2:3000/api/v1";
 //    private final static String url = "http://10.0.2.2:3000";
     private final static String apiUrl = "http://192.168.1.8:3000/api/v1";
     private final static String url = "http://192.168.1.8:3000";

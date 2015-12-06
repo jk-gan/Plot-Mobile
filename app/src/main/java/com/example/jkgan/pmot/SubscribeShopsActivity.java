@@ -106,7 +106,7 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                     int length = jsonArr.length();
                     for(int i = 0; i < length; i++) {
                         jsnObj2 = jsonArr.getJSONObject(i);
-                        allItems.add(new Shop(jsnObj2.optString("name"), jsnObj2.optString("address"), R.drawable.profile, jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url")));
+                        allItems.add(new Shop(jsnObj2.optString("name"), jsnObj2.optString("address"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("phone"), jsnObj2.optString("description")));
                     }
 
                     LinearLayoutManager lLayout = new LinearLayoutManager(SubscribeShopsActivity.this);
