@@ -3,7 +3,6 @@ package com.example.jkgan.pmot;
 /**
  * Created by JKGan on 01/11/2015.
  */
-import android.animation.FloatArrayEvaluator;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,19 +12,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -189,7 +182,7 @@ public class QRcodeScanner extends AppCompatActivity {
                     String scanResult = sym.getData().trim();
 
                     if(scanResult.contains("Pmot@")) {
-                        mCamera.release();
+                        releaseCamera();
                         String str = scanResult.substring(5);
                         CheckASYNC loginTask = new CheckASYNC();
 
@@ -264,7 +257,7 @@ public class QRcodeScanner extends AppCompatActivity {
 //            String strURL = "http://10.0.2.2:3000/api/v1/auth/login";
 
             // For other device
-            String strURL = MyApplication.getUrl() + "/shops";
+            String strURL = MyApplication.getApiUrl() + "/shops";
 
                         /*JSONParser objJSONParser = new JSONParser();*/
             final JSONObject jsonObj = makeHttpRequest(strURL, "GET", parameters);
@@ -283,15 +276,25 @@ public class QRcodeScanner extends AppCompatActivity {
             if (!shopName.equals("")) {
                 final String NAME = shopName;
                 final String SHOP_ID = shopId;
+                final String SHOP_ADDRESS = result.optString("address");
+                try {
+                    final String SHOP_IMAGE = result.getJSONObject("image").getJSONObject("medium").optString("url");
+                    final String SHOP_PHONE = result.optString("phone");
+                    final String SHOP_DESCRIPTION = result.optString("description");
 
-                new Thread() {
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            public void run() {
-                                dialog.dismiss();
-                                Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
-                                intent.putExtra("NAME", NAME);
-                                intent.putExtra("SHOP_ID", SHOP_ID);
+                    new Thread() {
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    dialog.dismiss();
+                                    Intent intent = new Intent(QRcodeScanner.this, ShopActivity.class);
+                                    intent.putExtra("NAME", NAME);
+                                    intent.putExtra("ADDRESS", SHOP_ADDRESS);
+                                    intent.putExtra("IMAGE", SHOP_IMAGE);
+                                    intent.putExtra("PHONE", SHOP_PHONE);
+                                    intent.putExtra("DESCRIPTION", SHOP_DESCRIPTION);
+                                    intent.putExtra("SHOP_ID", SHOP_ID);
+                                    intent.putExtra("SUBSCRIBED", false);
 
 //                                ShopActivity fragment = new ShopActivity();
 //                                android.support.v4.app.FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
@@ -305,15 +308,21 @@ public class QRcodeScanner extends AppCompatActivity {
 //
 //                                fragmentTransaction.commit();
 
-                                startActivity(intent);
+                                    startActivity(intent);
 
-                                Toast toast;
-                                toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);
-                                toast.show();
-                            }
-                        });
-                    }
-                }.start();
+                                    Toast toast;
+                                    toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);
+                                    toast.show();
+                                }
+                            });
+                        }
+                    }.start();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
 
 
             } else {
@@ -401,34 +410,29 @@ public class QRcodeScanner extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if(mCamera != null) {
-            mCamera.stopPreview();
-            mCamera.setPreviewCallback(null);
-            mPreview.getHolder().removeCallback(mPreview);
-            mCamera.release();
-            mCamera=null;
-        }
+        releaseCamera();
     }
 //
     @Override
     public void onResume(){
         super.onResume();
-//        try
-//        {
-//            if(mCamera == null) {
-//                mCamera.setPreviewCallback(null);
-//                mCamera = getCameraInstance();
-//                //mCamera.setPreviewCallback(null);
-//                mPreview = new CameraPreview(getActivity(), mCamera, previewCb,
-//                        autoFocusCB);//set preview
-//                FrameLayout preview = (FrameLayout) super.getActivity().findViewById(R.id.cameraPreview);
-//                preview.addView(mPreview);
-//            }
+        try
+        {
+            if(mCamera == null) {
+                mCamera.setPreviewCallback(null);
+                mPreview.getHolder().removeCallback(mPreview);
+                mCamera = getCameraInstance();
+                //mCamera.setPreviewCallback(null);
+                mPreview = new CameraPreview(this, mCamera, previewCb,
+                        autoFocusCB);//set preview
+                FrameLayout preview = (FrameLayout) findViewById(R.id.cameraPreview);
+                preview.addView(mPreview);
+            }
 //
-//        } catch (Exception e){
-////            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
-//            e.printStackTrace();
-//        }
+        } catch (Exception e){
+//            Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }

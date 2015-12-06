@@ -2,47 +2,34 @@ package com.example.jkgan.pmot;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
-//import org.apache.http.*;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URLEncodedUtils;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-import Http.HttpRequest;
-import person.User;
+import com.example.jkgan.pmot.Http.HttpRequest;
+import com.example.jkgan.pmot.person.User;
+import com.example.jkgan.pmot.service.QuickstartPreferences;
 
 public class LoginActivity extends AppCompatActivity {
 
     protected User user = new User();
+    public static final String LOGGED_IN = "loggedIN";
+    public static String TOKEN = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +92,7 @@ public class LoginActivity extends AppCompatActivity {
             final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
             parameters.add(new BasicNameValuePair("email", params[0]));
             parameters.add(new BasicNameValuePair("password", params[1]));
-            String strURL = MyApplication.getUrl() + "/auth/login";
+            String strURL = MyApplication.getApiUrl() + "/auth/login";
             HttpRequest request = new HttpRequest();
 
             return request.makeHttpRequest(strURL, "POST", parameters);
@@ -129,20 +116,23 @@ public class LoginActivity extends AppCompatActivity {
 
             if (!token.equals("")) {
 
+                final String THE_TOKEN = token;
+
                 new Thread() {
                     public void run() {
                         runOnUiThread(new Runnable() {
                             public void run() {
                                 dialog.dismiss();
+                                SharedPreferences sharedPreferences =
+                                        PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                                sharedPreferences.edit().putBoolean(LOGGED_IN, true).apply();
+                                sharedPreferences.edit().putString(TOKEN, THE_TOKEN).apply();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //                                intent.putExtra("TOKEN", TOKEN);
                                 MyApplication myApp = ((MyApplication) getApplicationContext());
                                 myApp.setUser(user);
                                 startActivity(intent);
-
-                                Toast toast;
-                                toast = Toast.makeText(getApplicationContext(), "Welcome", Toast.LENGTH_SHORT);
-                                toast.show();
+                                finish();
                             }
                         });
                     }

@@ -14,7 +14,8 @@
     <string name="draft_string">Drafts</string>
     <string name="trash_string">Trash</string>
     <string name="all_mail_string">All mails</string>
-    <string name="spam_string">Spams</string>
+    <string name="logout_string">Logout</string>
     <string name="closeDrawer">Navigation View</string>
     <string name="openDrawer">Navigation View Closed</string>
+    <string name="gcm_SenderId">1003506542405</string>
 </resources>

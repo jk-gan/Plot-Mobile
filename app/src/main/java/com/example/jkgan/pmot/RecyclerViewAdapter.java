@@ -6,14 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
 
-    private List<ItemObject> itemList;
+    private List<Shop> itemList;
     private Context context;
 
-    public RecyclerViewAdapter(Context context, List<ItemObject> itemList) {
+    public RecyclerViewAdapter(Context context, List<Shop> itemList) {
         this.itemList = itemList;
         this.context = context;
     }
@@ -22,7 +24,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public RecyclerViewHolders onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View layoutView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_list, null);
-        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView);
+        RecyclerViewHolders rcv = new RecyclerViewHolders(layoutView, itemList);
         return rcv;
     }
 
@@ -30,7 +32,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolder
     public void onBindViewHolder(RecyclerViewHolders holder, int position) {
         holder.personName.setText(itemList.get(position).getName());
         holder.personAddress.setText(itemList.get(position).getAddress());
-        holder.personPhoto.setImageResource(itemList.get(position).getPhotoId());
+        Glide.with(context).load(MyApplication.getUrl() + itemList.get(position).getSmallImage()).into(holder.personPhoto);
     }
 
     @Override
