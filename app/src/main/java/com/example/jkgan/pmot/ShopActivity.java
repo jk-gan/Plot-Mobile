@@ -3,6 +3,7 @@ package com.example.jkgan.pmot;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -73,9 +74,21 @@ public class ShopActivity extends AppCompatActivity {
             btnSubscribe.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MyApplication appState = ((MyApplication) getApplicationContext());
-                    SubscribeASYNC subscribeTask = new SubscribeASYNC();
-                    subscribeTask.execute(shopId, appState.getUser().getToken());
+
+                    new Thread() {
+                        public void run() {
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(shopAdress) + ", Malaysia");
+                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    startActivity(mapIntent);
+                                }
+                            });
+                        }
+                    }.start();
+
+
                 }
             });
         } else {

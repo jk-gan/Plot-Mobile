@@ -86,7 +86,7 @@ public class MyGcmListenerService extends GcmListenerService {
             notificationTitle += (", " + title);
 
             notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher1)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle((numMessages + 1) + " new promotions")
                     .setContentText(notificationTitle)
                     .setAutoCancel(true)
@@ -98,7 +98,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         } else {
             notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher1)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(title)
                     .setContentText(message)
                     .setAutoCancel(true)

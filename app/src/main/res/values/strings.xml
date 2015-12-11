@@ -18,4 +18,8 @@
     <string name="closeDrawer">Navigation View</string>
     <string name="openDrawer">Navigation View Closed</string>
     <string name="gcm_SenderId">1003506542405</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">
+        AIzaSyD6w_vtAK63GilUioy6nn7Lhjw_1i_nTh8
+    </string>
 </resources>
