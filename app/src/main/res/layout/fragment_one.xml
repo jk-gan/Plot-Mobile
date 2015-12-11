@@ -3,24 +3,37 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:id="@+id/oneLayout"
     android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="#1"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        android:layout_centerInParent="true"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/activity_promotion_swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/rv"
+        />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+    <!--<TextView-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="#1"-->
+        <!--android:textSize="40dp"-->
+        <!--android:textStyle="bold"-->
+        <!--android:layout_centerInParent="true"/>-->
 
 </RelativeLayout>
 
     <android.support.design.widget.FloatingActionButton
+        app:layout_behavior="com.example.jkgan.pmot.ScrollAwareFABBehavior"
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

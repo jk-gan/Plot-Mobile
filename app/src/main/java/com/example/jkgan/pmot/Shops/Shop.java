@@ -1,4 +1,4 @@
-package com.example.jkgan.pmot;
+package com.example.jkgan.pmot.Shops;
 
 /**
  * Created by JKGan on 29/11/2015.
@@ -12,6 +12,10 @@ public class Shop {
     private String phone;
     private String description;
     private String smallImage;
+
+    public Shop() {
+
+    }
 
     public Shop(String name, String address, String id, String image, String smallImage, String phone, String description) {
         this.name = name;

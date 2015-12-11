@@ -21,10 +21,15 @@
             android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-        <RelativeLayout
+        <!--<RelativeLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--tools:context="com.example.jkgan.pmot.SubscribeShopsActivity">-->
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/activity_main_swipe_refresh_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:context="com.example.jkgan.pmot.SubscribeShopsActivity">
+            android:layout_height="match_parent">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
@@ -33,7 +38,8 @@
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp" />
 
-        </RelativeLayout>
+        </android.support.v4.widget.SwipeRefreshLayout>
+        <!--</RelativeLayout>-->
 
     </LinearLayout>
 

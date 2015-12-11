@@ -6,23 +6,23 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.jkgan.pmot.Shops.Shop;
+import com.example.jkgan.pmot.Shops.Promotion;
 
 import java.util.List;
 
-public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class PromotionRecyclerViewHolders extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-    public TextView personName;
-    public TextView personAddress;
-    public ImageView personPhoto;
-    private List<Shop> shopList;
+    public TextView promotionTitle;
+    public TextView promotionDescription;
+    public ImageView promotionImage;
+    private List<Promotion> promotionList;
 
-    public RecyclerViewHolders(View itemView, List<Shop> itemList) {
+    public PromotionRecyclerViewHolders(View itemView, List<Promotion> itemList) {
         super(itemView);
-        personName = (TextView)itemView.findViewById(R.id.person_name);
-        personAddress = (TextView)itemView.findViewById(R.id.person_address);
-        personPhoto = (ImageView)itemView.findViewById(R.id.circleView);
-        this.shopList = itemList;
+        promotionTitle = (TextView)itemView.findViewById(R.id.promotion_title);
+        promotionDescription = (TextView)itemView.findViewById(R.id.promotion_description);
+        promotionImage = (ImageView)itemView.findViewById(R.id.thumbnail);
+        this.promotionList = itemList;
 
         itemView.setOnClickListener(this);
     }
@@ -30,18 +30,19 @@ public class RecyclerViewHolders extends RecyclerView.ViewHolder implements View
     @Override
     public void onClick(final View view) {
         int position = getLayoutPosition(); // gets item position
-        final Shop shop = shopList.get(position);
+        final Promotion promotion = promotionList.get(position);
         // We can access the data within the views
         new Thread() {
             public void run() {
 
-                final Intent intent = new Intent(view.getContext(), ShopActivity.class);
-                intent.putExtra("NAME", shop.getName());
-                intent.putExtra("SHOP_ID", shop.getId());
-                intent.putExtra("ADDRESS", shop.getAddress());
-                intent.putExtra("IMAGE", shop.getImage());
-                intent.putExtra("PHONE", shop.getPhone());
-                intent.putExtra("DESCRIPTION", shop.getDescription());
+                final Intent intent = new Intent(view.getContext(), PromotionActivity.class);
+                intent.putExtra("NAME", promotion.getName());
+                intent.putExtra("SHOP_ID", promotion.getId());
+                intent.putExtra("IMAGE", promotion.getImage());
+                intent.putExtra("DESCRIPTION", promotion.getDescription());
+                intent.putExtra("TNC", promotion.getTnc());
+                intent.putExtra("SHOP_NAME", promotion.getShop().getName());
+                intent.putExtra("ADDRESS", promotion.getShop().getAddress());
                 intent.putExtra("SUBSCRIBED", true);
                 view.getContext(). startActivity(intent);
 

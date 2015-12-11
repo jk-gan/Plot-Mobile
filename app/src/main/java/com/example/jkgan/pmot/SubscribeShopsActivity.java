@@ -2,6 +2,8 @@ package com.example.jkgan.pmot;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,10 +22,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.jkgan.pmot.Http.HttpRequest;
+import com.example.jkgan.pmot.Shops.Shop;
 
 public class SubscribeShopsActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 //    private LinearLayoutManager lLayout;
 
     @Override
@@ -31,14 +35,23 @@ public class SubscribeShopsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe_shops);
 
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        MyApplication appState = ((MyApplication) getApplicationContext());
         ShopsListASYNC loginTask = new ShopsListASYNC();
-        loginTask.execute(appState.getUser().getToken());
+        loginTask.execute(MyApplication.getUser().getToken());
+
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshContent();
+            }
+        });
 
 
 
@@ -52,6 +65,18 @@ public class SubscribeShopsActivity extends AppCompatActivity {
 //        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(SubscribeShopsActivity.this, rowListItem);
 //        rView.setAdapter(rcAdapter);
     }
+
+    private void refreshContent() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ShopsListASYNC loginTask = new ShopsListASYNC();
+                loginTask.execute(MyApplication.getUser().getToken());
+                mSwipeRefreshLayout.setRefreshing(false);
+            }
+        }, 3000);
+    }
+
 //
 //    private List<Shop> getAllItemList(){
 //
@@ -76,10 +101,10 @@ public class SubscribeShopsActivity extends AppCompatActivity {
 
         @Override
         protected void onPreExecute() {
-            dialog.setMessage("Loading List...");
-            dialog.setCancelable(false);
-            dialog.setInverseBackgroundForced(false);
-            dialog.show();
+//            dialog.setMessage("Loading List...");
+//            dialog.setCancelable(false);
+//            dialog.setInverseBackgroundForced(false);
+//            dialog.show();
 
         }
 
@@ -120,7 +145,7 @@ public class SubscribeShopsActivity extends AppCompatActivity {
 
 
 
-                    dialog.dismiss();
+//                    dialog.dismiss();
                 } else {
                     Toast toast;
                     toast = Toast.makeText(getApplicationContext(), "Empty json array", Toast.LENGTH_SHORT);

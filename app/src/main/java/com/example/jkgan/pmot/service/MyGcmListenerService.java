@@ -28,8 +28,6 @@ import com.example.jkgan.pmot.MainActivity;
 import com.example.jkgan.pmot.R;
 import com.google.android.gms.gcm.GcmListenerService;
 
-import java.util.Random;
-
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
@@ -88,7 +86,7 @@ public class MyGcmListenerService extends GcmListenerService {
             notificationTitle += (", " + title);
 
             notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.mipmap.ic_launcher1)
                     .setContentTitle((numMessages + 1) + " new promotions")
                     .setContentText(notificationTitle)
                     .setAutoCancel(true)
@@ -100,7 +98,7 @@ public class MyGcmListenerService extends GcmListenerService {
 
         } else {
             notificationBuilder = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.mipmap.ic_launcher1)
                     .setContentTitle(title)
                     .setContentText(message)
                     .setAutoCancel(true)

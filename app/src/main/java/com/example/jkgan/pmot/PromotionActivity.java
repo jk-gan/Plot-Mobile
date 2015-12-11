@@ -25,34 +25,40 @@ import java.util.List;
 import com.bumptech.glide.Glide;
 import com.example.jkgan.pmot.Http.HttpRequest;
 
-public class ShopActivity extends AppCompatActivity {
+public class PromotionActivity extends AppCompatActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_shop);
+        setContentView(R.layout.activity_promotion);
 
         Intent intent = getIntent();
-        final String shopId = intent.getStringExtra("SHOP_ID");
-        final String shopName = intent.getStringExtra("NAME");
-        final String shopImage = intent.getStringExtra("IMAGE");
+        final String promotionId = intent.getStringExtra("SHOP_ID");
+        final String promotionName = intent.getStringExtra("NAME");
+        final String promotionImage = intent.getStringExtra("IMAGE");
         final String shopAdress = intent.getStringExtra("ADDRESS");
-        final String shopPhone = intent.getStringExtra("PHONE");
-        final String shopDescription = intent.getStringExtra("DESCRIPTION");
-        final boolean subscribed = intent.getBooleanExtra("SUBSCRIBED", false);
+        final String tnc = intent.getStringExtra("THC");
+        final String promotionDescription = intent.getStringExtra("DESCRIPTION");
+        final String shopName = intent.getStringExtra("SHOP_NAME");
 
         ImageView imageView = (ImageView) findViewById(R.id.promotionView);
 
-        Glide.with(this).load(MyApplication.getUrl() + shopImage).into(imageView);
+        Glide.with(this).load(MyApplication.getUrl() + promotionImage).into(imageView);
 
         TextView phone = (TextView) findViewById(R.id.phone);
-        phone.setText(shopPhone);
+//        phone.setText(shopPhone);
+
+        TextView sName = (TextView) findViewById(R.id.shop);
+        sName.setText(shopName);
 
         TextView address = (TextView) findViewById(R.id.address);
         address.setText(shopAdress);
 
         TextView description = (TextView) findViewById(R.id.description);
-        description.setText(shopDescription);
+        description.setText(promotionDescription);
+
+        TextView termAndCondition = (TextView) findViewById(R.id.tnc);
+        termAndCondition.setText(tnc);
 
         // Initializing Toolbar and setting it as the actionbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar1);
@@ -62,38 +68,27 @@ public class ShopActivity extends AppCompatActivity {
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(shopName);
+        collapsingToolbar.setTitle(promotionName);
 
 //        TextView txtShopName = (TextView) findViewById(R.id.longWord);
 //        txtShopName.setText("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.");
 
         FloatingActionButton btnSubscribe = (FloatingActionButton) findViewById(R.id.btnSubscirbe);
-        if(subscribed) {
-            btnSubscribe.setImageDrawable(getResources().getDrawable(R.drawable.ic_navigation));
-            btnSubscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MyApplication appState = ((MyApplication) getApplicationContext());
-                    SubscribeASYNC subscribeTask = new SubscribeASYNC();
-                    subscribeTask.execute(shopId, appState.getUser().getToken());
-                }
-            });
-        } else {
-            btnSubscribe.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MyApplication appState = ((MyApplication) getApplicationContext());
-                    SubscribeASYNC subscribeTask = new SubscribeASYNC();
-                    subscribeTask.execute(shopId, appState.getUser().getToken());
-                }
-            });
-        }
+        btnSubscribe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                MyApplication appState = ((MyApplication) getApplicationContext());
+//                SubscribeASYNC subscribeTask = new SubscribeASYNC();
+//                subscribeTask.execute(promotionId, appState.getUser().getToken());
+            }
+        });
+
     }
 
 
     private class SubscribeASYNC extends AsyncTask<String, Void, JSONObject> {
 
-        final ProgressDialog dialog = new ProgressDialog(ShopActivity.this);
+        final ProgressDialog dialog = new ProgressDialog(PromotionActivity.this);
 
         @Override
         protected void onPreExecute() {

@@ -97,6 +97,17 @@ public class MainActivity extends AppCompatActivity {
         final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+
+        OneFragment fragment = new OneFragment();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame,fragment);
+
+        // Remove the tab
+        tabLayout.setVisibility(View.GONE);
+        viewPager.setVisibility(View.GONE);
+
+        fragmentTransaction.commit();
+
         //Initializing NavigationView
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
 
