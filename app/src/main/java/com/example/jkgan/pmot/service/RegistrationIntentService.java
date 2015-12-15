@@ -39,7 +39,7 @@ public class RegistrationIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
 
-    private static final String REGISTER_URL = "http://192.168.1.8:3000/api/v1/devices";
+    private static final String REGISTER_URL = MyApplication.getApiUrl() + "/devices";
 
     private static final String KEY_TOKEN = "gcm_token";
 

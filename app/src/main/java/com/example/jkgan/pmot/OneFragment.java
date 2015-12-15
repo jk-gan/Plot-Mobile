@@ -157,8 +157,14 @@ public class OneFragment extends Fragment{
                     LinearLayoutManager lLayout = new LinearLayoutManager(getActivity());
                     lLayout.setOrientation(LinearLayoutManager.VERTICAL);
 
-                    RecyclerView rView = (RecyclerView) getActivity().findViewById(R.id.rv);
-                    rView.setLayoutManager(lLayout);
+                    RecyclerView rView;
+                    if(getActivity() == null) {
+                        MainActivity main = new MainActivity();
+                        rView = (RecyclerView) main.findViewById(R.id.rv);
+                    } else {
+                        rView = (RecyclerView) getActivity().findViewById(R.id.rv);
+                        rView.setLayoutManager(lLayout);
+                    }
 
                     PromotionRecyclerViewAdapter rcAdapter = new PromotionRecyclerViewAdapter(getActivity(), allItems);
                     rView.setAdapter(rcAdapter);

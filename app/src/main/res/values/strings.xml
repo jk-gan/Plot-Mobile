@@ -11,6 +11,7 @@
     <string name="starred_string">Starred</string>
     <string name="inbox_string">Inbox</string>
     <string name="sent_mail_string">Sent mail</string>
+    <string name="shops_list">Shops list</string>
     <string name="draft_string">Drafts</string>
     <string name="trash_string">Trash</string>
     <string name="all_mail_string">All mails</string>

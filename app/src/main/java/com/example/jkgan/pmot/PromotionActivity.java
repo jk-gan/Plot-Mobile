@@ -37,7 +37,7 @@ public class PromotionActivity extends AppCompatActivity {
         final String promotionName = intent.getStringExtra("NAME");
         final String promotionImage = intent.getStringExtra("IMAGE");
         final String shopAdress = intent.getStringExtra("ADDRESS");
-        final String tnc = intent.getStringExtra("THC");
+        final String tnc = intent.getStringExtra("TNC");
         final String promotionDescription = intent.getStringExtra("DESCRIPTION");
         final String shopName = intent.getStringExtra("SHOP_NAME");
 

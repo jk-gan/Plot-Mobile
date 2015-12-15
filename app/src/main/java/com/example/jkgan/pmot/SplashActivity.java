@@ -39,10 +39,10 @@ public class SplashActivity extends AppCompatActivity {
                     PreferenceManager.getDefaultSharedPreferences(this);
             boolean loggedIn = sharedPreferences
                     .getBoolean(LoginActivity.LOGGED_IN, false);
-            if (loggedIn) {
 
-                String token = sharedPreferences
-                        .getString(LoginActivity.TOKEN, "");
+            String token = sharedPreferences
+                    .getString(LoginActivity.TOKEN, "");
+            if (loggedIn && token != "") {
 
                 String url = REGISTER_URL + token;
 
