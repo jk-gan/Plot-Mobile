@@ -309,6 +309,7 @@ public class QRcodeScanner extends AppCompatActivity {
 //                                fragmentTransaction.commit();
 
                                     startActivity(intent);
+                                    finish();
 
                                     Toast toast;
                                     toast = Toast.makeText(getApplicationContext(), NAME, Toast.LENGTH_SHORT);

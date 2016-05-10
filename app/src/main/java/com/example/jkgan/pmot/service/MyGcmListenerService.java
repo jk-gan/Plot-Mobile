@@ -24,7 +24,6 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.example.jkgan.pmot.MainActivity;
 import com.example.jkgan.pmot.MyApplication;
 import com.example.jkgan.pmot.PromotionActivity;
 import com.example.jkgan.pmot.R;
@@ -103,7 +102,7 @@ public class MyGcmListenerService extends GcmListenerService {
                     response = client.newCall(request).execute();
                     JSONObject jsnObj2 = new JSONObject(response.body().string());
 
-                    promotion[0] = new Promotion(jsnObj2.optString("pName"), jsnObj2.optString("description"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("term_and_condition"), jsnObj2.optString("name"),jsnObj2.optString("address"),jsnObj2.optString("sId"));
+                    promotion[0] = new Promotion(jsnObj2.optString("pName"), jsnObj2.optString("description"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("term_and_condition"), jsnObj2.optString("name"), jsnObj2.optString("address"),jsnObj2.optString("sId"), getDate(jsnObj2.optString("starts_at")), getDate(jsnObj2.optString("expires_at")), jsnObj2.optString("phone"));
 
                     Intent intent = new Intent(getApplicationContext(), PromotionActivity.class);
                     intent.putExtra("NAME", promotion[0].getName());
@@ -113,6 +112,9 @@ public class MyGcmListenerService extends GcmListenerService {
                     intent.putExtra("TNC", promotion[0].getTnc());
                     intent.putExtra("SHOP_NAME", promotion[0].getShop().getName());
                     intent.putExtra("ADDRESS", promotion[0].getShop().getAddress());
+                    intent.putExtra("START", promotion[0].getStarts_at());
+                    intent.putExtra("EXPIRE", promotion[0].getExpires_at());
+                    intent.putExtra("PHONE", promotion[0].getShop().getPhone());
                     intent.putExtra("SUBSCRIBED", true);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0 /* Request code */, intent,
@@ -130,6 +132,7 @@ public class MyGcmListenerService extends GcmListenerService {
                                 .setAutoCancel(true)
                                 .setSound(defaultSoundUri)
                                 .setContentIntent(pendingIntent);
+                        numMessages = 0;
 
                         notificationBuilder.setContentText(message)
                                 .setNumber(++numMessages);
@@ -162,4 +165,9 @@ public class MyGcmListenerService extends GcmListenerService {
             }
 //        }).start();
 //    }
+
+    private String getDate(String time) {
+        String str = time.substring(0, 10);
+        return str;
+    }
 }

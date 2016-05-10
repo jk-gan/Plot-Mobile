@@ -10,9 +10,12 @@ public class Promotion {
     private String image;
     private String id;
     private String smallImage;
+    private String starts_at;
+    private String expires_at;
+    private String phone;
     private Shop shop = new Shop();
 
-    public Promotion(String name, String description, String id, String image, String smallImage, String tnc, String shopName, String address, String shopIdentity) {
+    public Promotion(String name, String description, String id, String image, String smallImage, String tnc, String shopName, String address, String shopIdentity, String starts_at, String expires_at, String phone) {
         this.name = name;
         this.description = description;
         this.id = id;
@@ -22,6 +25,9 @@ public class Promotion {
         this.shop.setName(shopName);
         this.shop.setAddress(address);
         this.shop.setId(shopIdentity);
+        this.starts_at = starts_at;
+        this.expires_at = expires_at;
+        this.shop.setPhone(phone);
     }
 
 
@@ -78,5 +84,21 @@ public class Promotion {
 
     public void setShop(Shop shop) {
         this.shop = shop;
+    }
+
+    public String getStarts_at() {
+        return starts_at;
+    }
+
+    public void setStarts_at(String starts_at) {
+        this.starts_at = starts_at;
+    }
+
+    public String getExpires_at() {
+        return expires_at;
+    }
+
+    public void setExpires_at(String expires_at) {
+        this.expires_at = expires_at;
     }
 }

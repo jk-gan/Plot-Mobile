@@ -191,7 +191,7 @@ public class MainActivity extends AppCompatActivity {
                                     PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             sharedPreferences.edit().putBoolean(LoginActivity.LOGGED_IN, false).apply();
                             sharedPreferences.edit().putString(LoginActivity.TOKEN, "").apply();
-                            Intent intent = new Intent(MainActivity.this, FirstActivity.class);
+                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish();
                             Toast.makeText(getApplicationContext(),"Logout Selected",Toast.LENGTH_SHORT).show();
@@ -245,27 +245,9 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
-        return super.onOptionsItemSelected(item);
-    }
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();

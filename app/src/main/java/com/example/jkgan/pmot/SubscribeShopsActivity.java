@@ -18,6 +18,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,12 +128,13 @@ public class SubscribeShopsActivity extends AppCompatActivity {
             try {
                 List<Shop> allItems = new ArrayList<Shop>();
                 jsonArr = result.getJSONArray("Shops");
+                URLEncoder.encode(jsonArr.toString(), "UTF8");
                 JSONObject jsnObj2 = null;
                 if(jsonArr != null) {
                     int length = jsonArr.length();
                     for(int i = 0; i < length; i++) {
                         jsnObj2 = jsonArr.getJSONObject(i);
-                        allItems.add(new Shop(jsnObj2.optString("name"), jsnObj2.optString("address"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("phone"), jsnObj2.optString("description")));
+                        allItems.add(new Shop(jsnObj2.optString("name"), jsnObj2.optString("address"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("phone"), new String(jsnObj2.optString("description").getBytes(), "UTF-8")));
                     }
 
                     LinearLayoutManager lLayout = new LinearLayoutManager(SubscribeShopsActivity.this);
@@ -152,6 +155,8 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                     toast.show();
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
         }

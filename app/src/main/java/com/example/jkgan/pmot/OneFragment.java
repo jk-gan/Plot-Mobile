@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
 public class OneFragment extends Fragment{
@@ -151,7 +154,7 @@ public class OneFragment extends Fragment{
                     int length = jsonArr.length();
                     for(int i = 0; i < length; i++) {
                         jsnObj2 = jsonArr.getJSONObject(i);
-                        allItems.add(new Promotion(jsnObj2.optString("pName"), jsnObj2.optString("description"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("term_and_condition"), jsnObj2.optString("name"),jsnObj2.optString("address"),jsnObj2.optString("sId")));
+                        allItems.add(new Promotion(jsnObj2.optString("pName"), jsnObj2.optString("description"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("term_and_condition"), jsnObj2.optString("name"),jsnObj2.optString("address"),jsnObj2.optString("sId"), getDate(jsnObj2.optString("starts_at")), getDate(jsnObj2.optString("expires_at")), jsnObj2.optString("phone")));
                     }
 
                     LinearLayoutManager lLayout = new LinearLayoutManager(getActivity());
@@ -180,6 +183,11 @@ public class OneFragment extends Fragment{
             }
         }
 
+    }
+
+    private String getDate(String time) {
+        String str = time.substring(0, 10);
+        return str;
     }
 
 }

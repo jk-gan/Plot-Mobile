@@ -6,10 +6,13 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -29,6 +32,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -42,6 +46,15 @@ public class RegisterActivity extends AppCompatActivity {
         final EditText txtName = (EditText) findViewById(R.id.editTextName);
         final EditText txtPassComf = (EditText) findViewById(R.id.editTextPassComf);
         Button btnRegister = (Button) findViewById(R.id.buttonRegister);
+        TextView login = (TextView) findViewById(R.id.link_login);
+
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                finish();
+            }
+        });
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                 final String password = txtPassword.getText().toString();
                 final String name = txtName.getText().toString();
                 final String passwordComf = txtPassComf.getText().toString();
+                Pattern pattern = Patterns.EMAIL_ADDRESS;
 
                 if (email.matches("") || password.matches("") || name.matches("") || passwordComf.matches("")) {
                     new Thread() {
@@ -63,9 +77,14 @@ public class RegisterActivity extends AppCompatActivity {
                     }.start();
 
                 } else {
-
-                    RegisterASYNC registerTask = new RegisterASYNC();
-                    registerTask.execute(name, email, password, passwordComf);
+                    if (!pattern.matcher(email).matches()) {
+                        txtEmail.setError("Invalid email address");
+                    } else if(!password.matches(passwordComf)) {
+                        txtPassword.setError("Not match with confirm password");
+                    } else {
+                        RegisterASYNC registerTask = new RegisterASYNC();
+                        registerTask.execute(name, email, password, passwordComf);
+                    }
                 }
             }
         });
@@ -291,6 +310,7 @@ public class RegisterActivity extends AppCompatActivity {
                                 dialog.dismiss();
                                 Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                                 startActivity(intent);
+                                finish();
 
                                 Toast toast;
                                 toast = Toast.makeText(getApplicationContext(), "Register successfully", Toast.LENGTH_SHORT);
@@ -303,9 +323,10 @@ public class RegisterActivity extends AppCompatActivity {
 
             } else {
                 dialog.dismiss();
-                Toast toast;
-                toast = Toast.makeText(getApplicationContext(), "Register Failed", Toast.LENGTH_SHORT);
-                toast.show();
+                Snackbar.make(findViewById((R.id.registerLayout)), "The email address has been used", Snackbar.LENGTH_LONG).show();
+//                Toast toast;
+//                toast = Toast.makeText(getApplicationContext(), "The email address has been used", Toast.LENGTH_SHORT);
+//                toast.show();
             }
         }
 

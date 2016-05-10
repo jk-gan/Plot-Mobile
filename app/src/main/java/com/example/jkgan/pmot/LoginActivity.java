@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.NameValuePair;
@@ -36,15 +37,18 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        final TextInputLayout emailWrapper = (TextInputLayout) findViewById(R.id.emailWrapper);
-        final TextInputLayout passwordWrapper = (TextInputLayout) findViewById(R.id.passwordWrapper);
-
-        emailWrapper.setHint("Email");
-        passwordWrapper.setHint("Password");
-
         final EditText txtEmail = (EditText) findViewById(R.id.editTextEmail);
         final EditText txtPassword = (EditText) findViewById(R.id.editTextPassword);
         Button btnlogin = (Button) findViewById(R.id.buttonLogin);
+        TextView register = (TextView) findViewById(R.id.link_signup);
+
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
+                finish();
+            }
+        });
 
         btnlogin.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,6 +3,7 @@ package com.example.jkgan.pmot;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -40,19 +41,25 @@ public class PromotionActivity extends AppCompatActivity {
         final String tnc = intent.getStringExtra("TNC");
         final String promotionDescription = intent.getStringExtra("DESCRIPTION");
         final String shopName = intent.getStringExtra("SHOP_NAME");
+        final String starts_at = intent.getStringExtra("START");
+        final String expires_at = intent.getStringExtra("EXPIRE");
+        final String shopPhone = intent.getStringExtra("PHONE");
 
         ImageView imageView = (ImageView) findViewById(R.id.promotionView);
 
         Glide.with(this).load(MyApplication.getUrl() + promotionImage).into(imageView);
 
         TextView phone = (TextView) findViewById(R.id.phone);
-//        phone.setText(shopPhone);
+        phone.setText(shopPhone);
 
         TextView sName = (TextView) findViewById(R.id.shop);
         sName.setText(shopName);
 
         TextView address = (TextView) findViewById(R.id.address);
         address.setText(shopAdress);
+
+        TextView start = (TextView) findViewById(R.id.date);
+        start.setText(starts_at + " to " + expires_at);
 
         TextView description = (TextView) findViewById(R.id.description);
         description.setText(promotionDescription);
@@ -77,9 +84,18 @@ public class PromotionActivity extends AppCompatActivity {
         btnSubscribe.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                MyApplication appState = ((MyApplication) getApplicationContext());
-//                SubscribeASYNC subscribeTask = new SubscribeASYNC();
-//                subscribeTask.execute(promotionId, appState.getUser().getToken());
+                new Thread() {
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        public void run() {
+                            Uri gmmIntentUri = Uri.parse("google.navigation:q=" + Uri.encode(shopAdress) + ", Malaysia");
+                            Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                            mapIntent.setPackage("com.google.android.apps.maps");
+                            startActivity(mapIntent);
+                        }
+                    });
+                }
+            }.start();
             }
         });
 

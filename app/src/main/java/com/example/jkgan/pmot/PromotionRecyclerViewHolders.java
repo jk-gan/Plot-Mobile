@@ -43,6 +43,9 @@ public class PromotionRecyclerViewHolders extends RecyclerView.ViewHolder implem
                 intent.putExtra("TNC", promotion.getTnc());
                 intent.putExtra("SHOP_NAME", promotion.getShop().getName());
                 intent.putExtra("ADDRESS", promotion.getShop().getAddress());
+                intent.putExtra("START", promotion.getStarts_at());
+                intent.putExtra("EXPIRE", promotion.getExpires_at());
+                intent.putExtra("PHONE", promotion.getShop().getPhone());
                 intent.putExtra("SUBSCRIBED", true);
                 view.getContext(). startActivity(intent);
 

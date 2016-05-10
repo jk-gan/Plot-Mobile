@@ -68,7 +68,7 @@ public class RegistrationIntentService extends IntentService {
 
                 // Si le token a déjà été engistre pas la peine de le renvoyer
                 if (!sharedPreferences.getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false)) {
-                    System.out.println("INSIDE~~~~");
+
                     sendRegistrationToServer(token);
                 }
 
