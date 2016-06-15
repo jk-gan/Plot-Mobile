@@ -90,7 +90,13 @@ public class OneFragment extends Fragment{
             loginTask.execute(MyApplication.getUser().getToken());
             dialog.dismiss();
         } else {
-            scanButton.setVisibility(View.INVISIBLE);
+//            scanButton.setVisibility(View.INVISIBLE);
+            scanButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                Snackbar.make(rootView.findViewById((R.id.coordinator)), "Unable to scan in offline", Snackbar.LENGTH_LONG).show();
+                }
+            });
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {

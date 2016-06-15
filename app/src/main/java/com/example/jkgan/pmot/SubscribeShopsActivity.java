@@ -186,23 +186,6 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                         allItems.add(new Shop(jsnObj2.optString("name"), jsnObj2.optString("address"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("phone"), new String(jsnObj2.optString("description").getBytes(), "UTF-8")));
                         db.fnRunSQL("INSERT INTO shops (id, name, address, phone, description) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("name")+"\", \""+jsnObj2.optString("address")+"\", \""+jsnObj2.optString("phone")+"\", \""+jsnObj2.optString("description")+"\");",
                                 getApplicationContext());
-
-                        System.out.println("INSERT INTO shops (id, name, address, phone, description) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("name")+"\", \""+jsnObj2.optString("address")+"\", \""+jsnObj2.optString("phone")+"\", \""+jsnObj2.optString("description")+"");
-                    }
-
-                    SQLiteDatabase sqLiteDatabase;
-                    sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
-                    Cursor resultSet = sqLiteDatabase.rawQuery("Select * from shops;", null);
-
-
-                    if (resultSet.moveToFirst()){
-                        do{
-
-                            String name = resultSet.getString(resultSet.getColumnIndex("name"));
-                            System.out.println("====DDDD=================" + name);
-
-
-                        }while (resultSet.moveToNext());
                     }
 
 

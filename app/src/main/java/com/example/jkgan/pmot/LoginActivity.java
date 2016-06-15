@@ -121,22 +121,6 @@ public class LoginActivity extends AppCompatActivity {
                 db.fnRunSQL("INSERT INTO users (id, name, email, token) VALUES (1, \""+userData.optString("name")+"\", \""+userData.optString("email")+"\", \""+token+"\");",
                         getApplicationContext());
 
-                System.out.println("INSERT INTO users (id, name, email) VALUES (1, \""+userData.optString("name")+"\", \""+userData.optString("email")+"\");");
-
-                SQLiteDatabase sqLiteDatabase;
-                sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
-                Cursor resultSet = sqLiteDatabase.rawQuery("Select * from users;", null);
-
-
-                if (resultSet.moveToFirst()){
-                    do{
-
-                        String email = resultSet.getString(resultSet.getColumnIndex("email"));
-                        System.out.println("====CCCC=================" + email);
-
-
-                    }while (resultSet.moveToNext());
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }

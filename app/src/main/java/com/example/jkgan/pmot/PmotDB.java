@@ -52,9 +52,9 @@ public class PmotDB extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("DROP TABLE IF EXITS "+tblUser+";");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXITS "+tblShop+";");
-        sqLiteDatabase.execSQL("DROP TABLE IF EXITS "+tblPromotion+";");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+tblUser+";");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+tblShop+";");
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS "+tblPromotion+";");
     }
 
     public void fnRunSQL(String sql, Context context){
@@ -67,6 +67,9 @@ public class PmotDB extends SQLiteOpenHelper {
     }
 
     public void drop(SQLiteDatabase db) {
-        db.execSQL("DROP TABLE IF EXISTS expenses;");
+        db.execSQL("DROP TABLE IF EXISTS "+tblUser+";");
+        db.execSQL("DROP TABLE IF EXISTS "+tblShop+";");
+        db.execSQL("DROP TABLE IF EXISTS "+tblPromotion+";");
+        onCreate(db);
     }
 }
