@@ -3,6 +3,8 @@ package com.example.jkgan.pmot;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -81,25 +83,66 @@ public class SplashActivity extends AppCompatActivity {
             }
             finish();
         } else {
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-            alertDialogBuilder.setMessage("Please check your internet connection.");
-
-            alertDialogBuilder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface arg0, int arg1) {
-                    finish();
-                }
-            });
-
-//            alertDialogBuilder.setNegativeButton("No",new DialogInterface.OnClickListener() {
+//            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+//            alertDialogBuilder.setMessage("Please check your internet connection.");
+//
+//            alertDialogBuilder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
 //                @Override
-//                public void onClick(DialogInterface dialog, int which) {
+//                public void onClick(DialogInterface arg0, int arg1) {
 //                    finish();
 //                }
 //            });
+//
+//            AlertDialog alertDialog = alertDialogBuilder.create();
+//            alertDialog.show();
 
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
+            SharedPreferences sharedPreferences =
+                    PreferenceManager.getDefaultSharedPreferences(this);
+            boolean loggedIn = sharedPreferences
+                    .getBoolean(LoginActivity.LOGGED_IN, false);
+
+            String token = sharedPreferences
+                    .getString(LoginActivity.TOKEN, "");
+            if (loggedIn && token != "") {
+
+                SQLiteDatabase sqLiteDatabase;
+                sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
+                Cursor resultSet = sqLiteDatabase.rawQuery("Select * from users;", null);
+
+
+                if (resultSet.moveToFirst()){
+                    do{
+
+                        String email = resultSet.getString(resultSet.getColumnIndex("email"));
+                        System.out.println("====CCCC=================" + email);
+
+
+                        user.setToken(token);
+                        user.setName(resultSet.getString(resultSet.getColumnIndex("name")));
+                        user.setEmail(resultSet.getString(resultSet.getColumnIndex("email")));
+                        MyApplication myApp = ((MyApplication) getApplicationContext());
+                        myApp.setUser(user);
+
+                    }while (resultSet.moveToNext());
+                }
+
+                Intent intent = new Intent(SplashActivity.this, MainActivity.class);
+                startActivity(intent);
+
+            } else {
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+                alertDialogBuilder.setMessage("Please connect to internet to log in.");
+
+                alertDialogBuilder.setPositiveButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface arg0, int arg1) {
+                        finish();
+                    }
+                });
+
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
+            }
         }
     }
 }

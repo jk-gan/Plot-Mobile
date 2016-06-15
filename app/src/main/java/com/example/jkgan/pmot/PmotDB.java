@@ -25,7 +25,7 @@ public class PmotDB extends SQLiteOpenHelper {
                 "  id integer primary key," +
                 "  name varchar(255)," +
                 "  email varchar(255)," +
-                "  created_at datetime" +
+                "  token varchar(255)" +
                 "  );");
         System.out.println("testing2");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS "+tblShop+" (" +

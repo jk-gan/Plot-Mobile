@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                 user.setName(userData.optString("name"));
                 user.setEmail(userData.optString("email"));
 
-                db.fnRunSQL("INSERT INTO users (name, email) VALUES (\""+userData.optString("name")+"\", \""+userData.optString("email")+"\");",
+                db.fnRunSQL("INSERT INTO users (id, name, email, token) VALUES (1, \""+userData.optString("name")+"\", \""+userData.optString("email")+"\", \""+token+"\");",
                         getApplicationContext());
 
                 System.out.println("INSERT INTO users (id, name, email) VALUES (1, \""+userData.optString("name")+"\", \""+userData.optString("email")+"\");");
