@@ -65,4 +65,8 @@ public class PmotDB extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
+
+    public void drop(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS expenses;");
+    }
 }

@@ -213,8 +213,11 @@ public class MainActivity extends AppCompatActivity {
                             SharedPreferences sharedPreferences =
                                     PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                             sharedPreferences.edit().putBoolean(LoginActivity.LOGGED_IN, false).apply();
+                            PmotDB db = new PmotDB(getApplicationContext());
+//                            SQLiteDatabase dbPmot = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
+                            db.drop(db.getReadableDatabase());
                             sharedPreferences.edit().putString(LoginActivity.TOKEN, "").apply();
-                            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                            Intent intent = new Intent(MainActivity.this, SplashActivity.class);
                             startActivity(intent);
                             finish();
                             Toast.makeText(getApplicationContext(),"Logout Selected",Toast.LENGTH_SHORT).show();
@@ -252,13 +255,6 @@ public class MainActivity extends AppCompatActivity {
             actionBarDrawerToggle.syncState();
         }
 
-
-
-
-
-
-
-
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -267,9 +263,6 @@ public class MainActivity extends AppCompatActivity {
         adapter.addFragment(new TwoFragment(), "TWO");
         viewPager.setAdapter(adapter);
     }
-
-
-
 
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
