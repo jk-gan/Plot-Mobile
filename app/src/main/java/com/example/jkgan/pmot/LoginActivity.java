@@ -3,6 +3,8 @@ package com.example.jkgan.pmot;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         final EditText txtEmail = (EditText) findViewById(R.id.editTextEmail);
         final EditText txtPassword = (EditText) findViewById(R.id.editTextPassword);
