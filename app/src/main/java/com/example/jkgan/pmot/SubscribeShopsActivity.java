@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.jkgan.pmot.Http.HttpRequest;
+import com.example.jkgan.pmot.Shops.Promotion;
 import com.example.jkgan.pmot.Shops.Shop;
 
 public class SubscribeShopsActivity extends AppCompatActivity {
@@ -39,26 +40,56 @@ public class SubscribeShopsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_subscribe_shops);
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
-
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
 
-        ShopsListASYNC loginTask = new ShopsListASYNC();
-        loginTask.execute(MyApplication.getUser().getToken());
+        if(MyApplication.isNetworkAvailable(this)) {
+            mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+            mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
 
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshContent();
+            ShopsListASYNC loginTask = new ShopsListASYNC();
+            loginTask.execute(MyApplication.getUser().getToken());
+
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshContent();
+                }
+            });
+        } else {
+            List<Shop> allItems = new ArrayList<Shop>();
+            SQLiteDatabase sqLiteDatabase;
+            sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
+            Cursor resultSet = sqLiteDatabase.rawQuery("Select * from shops;", null);
+            System.out.println("====AAAA=================");
+
+            for(int i = 0; i < resultSet.getColumnCount(); i++) {
+                System.out.println(resultSet.getColumnName(i));
             }
-        });
+
+            if (resultSet.moveToFirst()){
+                do{
+
+                    String name = resultSet.getString(resultSet.getColumnIndex("name"));
+                    System.out.println("====BBBB=================" + name);
+
+                    allItems.add(new Shop(resultSet.getString(resultSet.getColumnIndex("name")), resultSet.getString(resultSet.getColumnIndex("address")), resultSet.getString(resultSet.getColumnIndex("id")), "", "", resultSet.getString(resultSet.getColumnIndex("phone")), resultSet.getString(resultSet.getColumnIndex("description"))));
 
 
+                }while (resultSet.moveToNext());
+            }
 
+            LinearLayoutManager lLayout = new LinearLayoutManager(SubscribeShopsActivity.this);
+            lLayout.setOrientation(LinearLayoutManager.VERTICAL);
+
+            RecyclerView rView = (RecyclerView)findViewById(R.id.recycler_view);
+            rView.setLayoutManager(lLayout);
+
+            RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(SubscribeShopsActivity.this, allItems);
+            rView.setAdapter(rcAdapter);
+        }
 
 //        List<Shop> rowListItem = getAllItemList();
 //        lLayout = new LinearLayoutManager(SubscribeShopsActivity.this);
