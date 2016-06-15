@@ -184,7 +184,7 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                     for(int i = 0; i < length; i++) {
                         jsnObj2 = jsonArr.getJSONObject(i);
                         allItems.add(new Shop(jsnObj2.optString("name"), jsnObj2.optString("address"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("phone"), new String(jsnObj2.optString("description").getBytes(), "UTF-8")));
-                        db.fnRunSQL("INSERT INTO shops (id, name, address, phone, description) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("name")+"\", \""+jsnObj2.optString("address")+"\", \""+jsnObj2.optString("phone")+"\", \""+jsnObj2.optString("description")+"\");",
+                        db.fnRunSQL("INSERT INTO shops (id, name, address, phone, description) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("name")+"\", \""+jsnObj2.optString("address")+"\", \""+jsnObj2.optString("phone")+"\", \""+new String(jsnObj2.optString("description").getBytes(), "UTF-8")+"\");",
                                 getApplicationContext());
                     }
 

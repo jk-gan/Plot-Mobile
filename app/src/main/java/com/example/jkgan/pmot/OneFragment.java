@@ -32,6 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -89,6 +91,48 @@ public class OneFragment extends Fragment{
             PromotionsListASYNC loginTask = new PromotionsListASYNC();
             loginTask.execute(MyApplication.getUser().getToken());
             dialog.dismiss();
+
+            // Sync shops data
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    final List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+                    parameters.add(new BasicNameValuePair("token", MyApplication.getUser().getToken()));
+                    String strURL = MyApplication.getApiUrl() + "/shops/subscribe";
+                    HttpRequest request = new HttpRequest();
+
+                    JSONObject result = request.makeHttpRequest(strURL, "GET", parameters);
+                    PmotDB db = new PmotDB(getActivity().getApplicationContext());
+                    JSONArray jsonArr = null;
+                    try {
+                        List<Shop> allItems = new ArrayList<Shop>();
+                        jsonArr = result.getJSONArray("Shops");
+                        URLEncoder.encode(jsonArr.toString(), "UTF8");
+                        JSONObject jsnObj2 = null;
+                        if (jsonArr != null) {
+                            int length = jsonArr.length();
+                            for (int i = 0; i < length; i++) {
+                                jsnObj2 = jsonArr.getJSONObject(i);
+                                db.fnRunSQL("INSERT INTO shops (id, name, address, phone, description) VALUES (" + jsnObj2.optInt("id") + ", \"" + jsnObj2.optString("name") + "\", \"" + jsnObj2.optString("address") + "\", \"" + jsnObj2.optString("phone") + "\", \"" + new String(jsnObj2.optString("description").getBytes(), "UTF-8") + "\");",
+                                        getActivity().getApplicationContext());
+                            }
+
+                        } else {
+                            Toast toast;
+                            toast = Toast.makeText(getActivity().getApplicationContext(), "Empty json array", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+
+            Thread thr = new Thread(run);
+            thr.start();
+
         } else {
 //            scanButton.setVisibility(View.INVISIBLE);
             scanButton.setOnClickListener(new View.OnClickListener() {
@@ -115,21 +159,10 @@ public class OneFragment extends Fragment{
             SQLiteDatabase sqLiteDatabase;
             sqLiteDatabase = getActivity().openOrCreateDatabase("db_Pmot", getActivity().MODE_PRIVATE, null);
             Cursor resultSet = sqLiteDatabase.rawQuery("Select * from promotions, shops where promotions.shop_id = shops.id ORDER BY promotions.created_at DESC;", null);
-            System.out.println("====AAAA=================");
-
-            for(int i = 0; i < resultSet.getColumnCount(); i++) {
-                System.out.println(resultSet.getColumnName(i));
-            }
 
             if (resultSet.moveToFirst()){
                 do{
-
-                    String name = resultSet.getString(resultSet.getColumnIndex("name"));
-                    System.out.println("====BBBB=================" + name);
-
                     allItems.add(new Promotion(resultSet.getString(1), resultSet.getString(2), resultSet.getString(0), "", "", resultSet.getString(3), resultSet.getString(9), resultSet.getString(10),resultSet.getString(0), resultSet.getString(resultSet.getColumnIndex("starts_at")), resultSet.getString(resultSet.getColumnIndex("expires_at")), resultSet.getString(12)));
-
-
                 }while (resultSet.moveToNext());
             }
 
