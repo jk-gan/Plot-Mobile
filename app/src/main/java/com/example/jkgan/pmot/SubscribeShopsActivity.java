@@ -1,6 +1,8 @@
 package com.example.jkgan.pmot;
 
 import android.app.ProgressDialog;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -123,7 +125,7 @@ public class SubscribeShopsActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(JSONObject result) {
-
+            PmotDB db = new PmotDB(getApplicationContext());
             JSONArray jsonArr = null;
             try {
                 List<Shop> allItems = new ArrayList<Shop>();
@@ -135,7 +137,27 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                     for(int i = 0; i < length; i++) {
                         jsnObj2 = jsonArr.getJSONObject(i);
                         allItems.add(new Shop(jsnObj2.optString("name"), jsnObj2.optString("address"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("phone"), new String(jsnObj2.optString("description").getBytes(), "UTF-8")));
+                        db.fnRunSQL("INSERT INTO shops (id, name, address, phone, description) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("name")+"\", \""+jsnObj2.optString("address")+"\", \""+jsnObj2.optString("phone")+"\", \""+jsnObj2.optString("description")+"\");",
+                                getApplicationContext());
+
+                        System.out.println("INSERT INTO shops (id, name, address, phone, description) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("name")+"\", \""+jsnObj2.optString("address")+"\", \""+jsnObj2.optString("phone")+"\", \""+jsnObj2.optString("description")+"");
                     }
+
+                    SQLiteDatabase sqLiteDatabase;
+                    sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
+                    Cursor resultSet = sqLiteDatabase.rawQuery("Select * from shops;", null);
+
+
+                    if (resultSet.moveToFirst()){
+                        do{
+
+                            String name = resultSet.getString(resultSet.getColumnIndex("name"));
+                            System.out.println("====DDDD=================" + name);
+
+
+                        }while (resultSet.moveToNext());
+                    }
+
 
                     LinearLayoutManager lLayout = new LinearLayoutManager(SubscribeShopsActivity.this);
                     lLayout.setOrientation(LinearLayoutManager.VERTICAL);

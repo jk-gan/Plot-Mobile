@@ -56,22 +56,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        PmotDB db = new PmotDB(getApplicationContext());
-        db.fnRunSQL("INSERT INTO users (id, name, email) VALUES (7, 'James', 'z.mike0411@gmail.com');",
-                getApplicationContext());
+//        PmotDB db = new PmotDB(getApplicationContext());
+//        db.fnRunSQL("INSERT INTO users (id, name, email) VALUES (7, 'James', 'z.mike0411@gmail.com');",
+//                getApplicationContext());
+//        db.fnRunSQL("INSERT INTO users (id, name, email) VALUES (8, 'James 2', 'z.mike0411@gmail.com');",
+//                getApplicationContext());
 
-        sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
-        Cursor resultSet = sqLiteDatabase.rawQuery("Select * from users;", null);
-
-        if (resultSet.moveToFirst()){
-            do{
-
-                String name = resultSet.getString(resultSet.getColumnIndex("name"));
-                System.out.println("=====================" + name);
-
-
-            }while (resultSet.moveToNext());
-        }
+//        sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
+//        Cursor resultSet = sqLiteDatabase.rawQuery("Select * from users;", null);
+//
+//        if (resultSet.moveToFirst()){
+//            do{
+//
+//                String name = resultSet.getString(resultSet.getColumnIndex("name"));
+//                System.out.println("=====================" + name);
+//
+//
+//            }while (resultSet.moveToNext());
+//        }
 
         if(MyApplication.getUser() == null) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);

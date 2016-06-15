@@ -111,11 +111,32 @@ public class LoginActivity extends AppCompatActivity {
             String token = "";
             token = result.optString("token");
             user.setToken(token);
+            PmotDB db = new PmotDB(getApplicationContext());
 
             try {
                 JSONObject userData = result.getJSONObject("user");
                 user.setName(userData.optString("name"));
                 user.setEmail(userData.optString("email"));
+
+                db.fnRunSQL("INSERT INTO users (name, email) VALUES (\""+userData.optString("name")+"\", \""+userData.optString("email")+"\");",
+                        getApplicationContext());
+
+                System.out.println("INSERT INTO users (id, name, email) VALUES (1, \""+userData.optString("name")+"\", \""+userData.optString("email")+"\");");
+
+                SQLiteDatabase sqLiteDatabase;
+                sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
+                Cursor resultSet = sqLiteDatabase.rawQuery("Select * from users;", null);
+
+
+                if (resultSet.moveToFirst()){
+                    do{
+
+                        String email = resultSet.getString(resultSet.getColumnIndex("email"));
+                        System.out.println("====CCCC=================" + email);
+
+
+                    }while (resultSet.moveToNext());
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
