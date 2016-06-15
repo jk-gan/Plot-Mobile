@@ -5,6 +5,8 @@ package com.example.jkgan.pmot;
  */
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -145,6 +147,7 @@ public class OneFragment extends Fragment{
         protected void onPostExecute(JSONObject result) {
 
             JSONArray jsonArr = null;
+            PmotDB db = new PmotDB(getActivity().getApplicationContext());
             try {
                 List<Promotion> allItems = new ArrayList<Promotion>();
                 jsonArr = result.getJSONArray("Shops");
@@ -155,6 +158,27 @@ public class OneFragment extends Fragment{
                     for(int i = 0; i < length; i++) {
                         jsnObj2 = jsonArr.getJSONObject(i);
                         allItems.add(new Promotion(jsnObj2.optString("pName"), jsnObj2.optString("description"), jsnObj2.optString("id"), jsnObj2.getJSONObject("image").getJSONObject("medium").optString("url"), jsnObj2.getJSONObject("image").getJSONObject("small").optString("url"), jsnObj2.optString("term_and_condition"), jsnObj2.optString("name"),jsnObj2.optString("address"),jsnObj2.optString("sId"), getDate(jsnObj2.optString("starts_at")), getDate(jsnObj2.optString("expires_at")), jsnObj2.optString("phone")));
+
+                        db.fnRunSQL("INSERT INTO promotions (id, name, description, term_and_condition, starts_at, expires_at, shop_id) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("pName")+"\", \""+jsnObj2.optString("description")+"\", \""+jsnObj2.optString("term_and_condition")+"\", \""+getDate(jsnObj2.optString("starts_at"))+"\", \""+getDate(jsnObj2.optString("expires_at"))+"\", "+jsnObj2.optInt("shop_id")+");",
+                                getActivity().getApplicationContext());
+
+                        System.out.println("INSERT INTO promotions (id, name, description, term_and_condition, starts_at, expires_at, shop_id) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("pName")+"\", \""+jsnObj2.optString("description")+"\", \""+jsnObj2.optString("term_and_condition")+"\", \""+getDate(jsnObj2.optString("starts_at"))+"\", \""+getDate(jsnObj2.optString("expires_at"))+"\", "+jsnObj2.optInt("shop_id")+");");
+                    }
+
+                    SQLiteDatabase sqLiteDatabase;
+                    sqLiteDatabase = getActivity().openOrCreateDatabase("db_Pmot", getActivity().MODE_PRIVATE, null);
+                    Cursor resultSet = sqLiteDatabase.rawQuery("Select * from promotions;", null);
+                    System.out.println("====AAAA=================");
+
+
+                    if (resultSet.moveToFirst()){
+                        do{
+
+                            String name = resultSet.getString(resultSet.getColumnIndex("name"));
+                            System.out.println("====BBBB=================" + name);
+
+
+                        }while (resultSet.moveToNext());
                     }
 
                     LinearLayoutManager lLayout = new LinearLayoutManager(getActivity());

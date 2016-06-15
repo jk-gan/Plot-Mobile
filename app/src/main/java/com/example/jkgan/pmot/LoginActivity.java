@@ -3,6 +3,8 @@ package com.example.jkgan.pmot;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -36,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         final EditText txtEmail = (EditText) findViewById(R.id.editTextEmail);
         final EditText txtPassword = (EditText) findViewById(R.id.editTextPassword);
@@ -108,11 +111,32 @@ public class LoginActivity extends AppCompatActivity {
             String token = "";
             token = result.optString("token");
             user.setToken(token);
+            PmotDB db = new PmotDB(getApplicationContext());
 
             try {
                 JSONObject userData = result.getJSONObject("user");
                 user.setName(userData.optString("name"));
                 user.setEmail(userData.optString("email"));
+
+                db.fnRunSQL("INSERT INTO users (name, email) VALUES (\""+userData.optString("name")+"\", \""+userData.optString("email")+"\");",
+                        getApplicationContext());
+
+                System.out.println("INSERT INTO users (id, name, email) VALUES (1, \""+userData.optString("name")+"\", \""+userData.optString("email")+"\");");
+
+                SQLiteDatabase sqLiteDatabase;
+                sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
+                Cursor resultSet = sqLiteDatabase.rawQuery("Select * from users;", null);
+
+
+                if (resultSet.moveToFirst()){
+                    do{
+
+                        String email = resultSet.getString(resultSet.getColumnIndex("email"));
+                        System.out.println("====CCCC=================" + email);
+
+
+                    }while (resultSet.moveToNext());
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -130,7 +154,7 @@ public class LoginActivity extends AppCompatActivity {
                                 SharedPreferences sharedPreferences =
                                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                 sharedPreferences.edit().putBoolean(LOGGED_IN, true).apply();
-                                sharedPreferences.edit().putString(TOKEN, THE_TOKEN).apply();
+//                                sharedPreferences.edit().putString(TOKEN, THE_TOKEN).apply();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //                                intent.putExtra("TOKEN", TOKEN);
                                 MyApplication myApp = ((MyApplication) getApplicationContext());
