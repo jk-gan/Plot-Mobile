@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -58,11 +59,11 @@ public class OneFragment extends Fragment{
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_one,container, false);
         scanButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_promotion_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
 
         if(MyApplication.isNetworkAvailable(getActivity())) {
 
-            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_promotion_swipe_refresh_layout);
-            mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
             mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
@@ -90,12 +91,24 @@ public class OneFragment extends Fragment{
             dialog.dismiss();
         } else {
             scanButton.setVisibility(View.INVISIBLE);
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(getActivity().findViewById((R.id.coordinator)), "Unable to refresh", Snackbar.LENGTH_LONG).show();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, 2200);
+                }
+            });
 
 
             final List<Promotion> allItems = new ArrayList<Promotion>();
             SQLiteDatabase sqLiteDatabase;
             sqLiteDatabase = getActivity().openOrCreateDatabase("db_Pmot", getActivity().MODE_PRIVATE, null);
-            Cursor resultSet = sqLiteDatabase.rawQuery("Select * from promotions, shops where promotions.shop_id = shops.id;", null);
+            Cursor resultSet = sqLiteDatabase.rawQuery("Select * from promotions, shops where promotions.shop_id = shops.id ORDER BY promotions.created_at DESC;", null);
             System.out.println("====AAAA=================");
 
             for(int i = 0; i < resultSet.getColumnCount(); i++) {
@@ -153,35 +166,12 @@ public class OneFragment extends Fragment{
         }, 3000);
     }
 
-//
-//    private List<Shop> getAllItemList(){
-//
-//        List<Shop> allItems = new ArrayList<Shop>();
-//        allItems.add(new Shop("Peter James", "Vildansvagen 19, Lund Sweden", R.drawable.profile));
-//        allItems.add(new Shop("Henry Jacobs", "3 Villa Crescent London, UK", R.drawable.profile));
-//        allItems.add(new Shop("Bola Olumide", "Victoria Island Lagos, Nigeria", R.drawable.profile));
-//        allItems.add(new Shop("Chidi Johnson", "New Heaven Enugu, Nigeria", R.drawable.profile));
-//        allItems.add(new Shop("DeGordio Puritio", "Italion Gata, Padova, Italy", R.drawable.profile));
-//        allItems.add(new Shop("Gary Cook", "San Fransisco, United States", R.drawable.profile));
-//        allItems.add(new Shop("Edith Helen", "Queens Crescent, New Zealand", R.drawable.profile));
-//        allItems.add(new Shop("Kingston Dude", "Ivory Lane, Abuja, Nigeria", R.drawable.profile));
-//        allItems.add(new Shop("Edwin Bent", "Johnson Road, Port Harcourt, Nigeria", R.drawable.profile));
-//        allItems.add(new Shop("Grace Praise", "Federal Quarters, Abuja Nigeria", R.drawable.profile));
-//
-//        return allItems;
-//    }
-
     private class PromotionsListASYNC extends AsyncTask<String, Void, JSONObject> {
 
 //        final ProgressDialog dialog = new ProgressDialog(getActivity());
 
         @Override
         protected void onPreExecute() {
-//            dialog.setMessage("Loading List...");
-//            dialog.setCancelable(false);
-//            dialog.setInverseBackgroundForced(false);
-//            dialog.show();
-
         }
 
         @Override
@@ -213,8 +203,6 @@ public class OneFragment extends Fragment{
 
                         db.fnRunSQL("INSERT INTO promotions (id, name, description, term_and_condition, starts_at, expires_at, shop_id) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("pName")+"\", \""+jsnObj2.optString("description")+"\", \""+jsnObj2.optString("term_and_condition")+"\", \""+getDate(jsnObj2.optString("starts_at"))+"\", \""+getDate(jsnObj2.optString("expires_at"))+"\", "+jsnObj2.optInt("shop_id")+");",
                                 getActivity().getApplicationContext());
-
-                        System.out.println("INSERT INTO promotions (id, name, description, term_and_condition, starts_at, expires_at, shop_id) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("pName")+"\", \""+jsnObj2.optString("description")+"\", \""+jsnObj2.optString("term_and_condition")+"\", \""+getDate(jsnObj2.optString("starts_at"))+"\", \""+getDate(jsnObj2.optString("expires_at"))+"\", "+jsnObj2.optInt("shop_id")+");");
                     }
 
                     LinearLayoutManager lLayout = new LinearLayoutManager(getActivity());
@@ -232,7 +220,6 @@ public class OneFragment extends Fragment{
                     PromotionRecyclerViewAdapter rcAdapter = new PromotionRecyclerViewAdapter(getActivity(), allItems);
                     rView.setAdapter(rcAdapter);
 
-//                    dialog.dismiss();
                 } else {
                     Toast toast;
                     toast = Toast.makeText(getContext(), "Empty json array", Toast.LENGTH_SHORT);

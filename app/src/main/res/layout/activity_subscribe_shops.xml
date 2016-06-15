@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/subscribe_shop_layout"
     tools:context="com.example.jkgan.pmot.SubscribeShopsActivity">
 
     <LinearLayout

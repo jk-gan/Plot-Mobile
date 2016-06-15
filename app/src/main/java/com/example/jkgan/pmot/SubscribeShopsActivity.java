@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -44,10 +45,10 @@ public class SubscribeShopsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
 
         if(MyApplication.isNetworkAvailable(this)) {
-            mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
-            mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
 
             ShopsListASYNC loginTask = new ShopsListASYNC();
             loginTask.execute(MyApplication.getUser().getToken());
@@ -59,6 +60,21 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                 }
             });
         } else {
+
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(findViewById((R.id.subscribe_shop_layout)), "Unable to refresh", Snackbar.LENGTH_LONG).show();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, 2200);
+
+                }
+            });
+
             List<Shop> allItems = new ArrayList<Shop>();
             SQLiteDatabase sqLiteDatabase;
             sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
