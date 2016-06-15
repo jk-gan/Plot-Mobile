@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                                 SharedPreferences sharedPreferences =
                                         PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                                 sharedPreferences.edit().putBoolean(LOGGED_IN, true).apply();
-                                sharedPreferences.edit().putString(TOKEN, THE_TOKEN).apply();
+//                                sharedPreferences.edit().putString(TOKEN, THE_TOKEN).apply();
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //                                intent.putExtra("TOKEN", TOKEN);
                                 MyApplication myApp = ((MyApplication) getApplicationContext());
