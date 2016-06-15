@@ -43,6 +43,7 @@ import java.util.Locale;
 public class OneFragment extends Fragment{
     SwipeRefreshLayout mSwipeRefreshLayout;
     FloatingActionButton scanButton;
+    PmotDB db;
 
     public OneFragment() {
         // Required empty public constructor
@@ -63,6 +64,7 @@ public class OneFragment extends Fragment{
         scanButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_promotion_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
+        db = new PmotDB(getActivity().getApplicationContext());
 
         if(MyApplication.isNetworkAvailable(getActivity())) {
 
@@ -102,7 +104,6 @@ public class OneFragment extends Fragment{
                     HttpRequest request = new HttpRequest();
 
                     JSONObject result = request.makeHttpRequest(strURL, "GET", parameters);
-                    PmotDB db = new PmotDB(getActivity().getApplicationContext());
                     JSONArray jsonArr = null;
                     try {
                         List<Shop> allItems = new ArrayList<Shop>();
@@ -134,6 +135,8 @@ public class OneFragment extends Fragment{
             thr.start();
 
         } else {
+
+            Toast.makeText(getContext(), "Image can't be showed due to no internet connection", Toast.LENGTH_SHORT).show();
 //            scanButton.setVisibility(View.INVISIBLE);
             scanButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -228,7 +231,6 @@ public class OneFragment extends Fragment{
         protected void onPostExecute(JSONObject result) {
 
             JSONArray jsonArr = null;
-            PmotDB db = new PmotDB(getActivity().getApplicationContext());
             try {
                 List<Promotion> allItems = new ArrayList<Promotion>();
                 jsonArr = result.getJSONArray("Shops");
