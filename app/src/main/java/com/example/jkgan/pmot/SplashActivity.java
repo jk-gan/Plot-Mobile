@@ -103,7 +103,7 @@ public class SplashActivity extends AppCompatActivity {
 
             String token = sharedPreferences
                     .getString(LoginActivity.TOKEN, "");
-            if (loggedIn && token != "") {
+            if (loggedIn) {
 
                 SQLiteDatabase sqLiteDatabase;
                 sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);

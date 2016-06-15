@@ -39,6 +39,7 @@ import java.util.Locale;
 
 public class OneFragment extends Fragment{
     SwipeRefreshLayout mSwipeRefreshLayout;
+    FloatingActionButton scanButton;
 
     public OneFragment() {
         // Required empty public constructor
@@ -56,36 +57,87 @@ public class OneFragment extends Fragment{
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_one,container, false);
+        scanButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
 
-        FloatingActionButton scanButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
+        if(MyApplication.isNetworkAvailable(getActivity())) {
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_promotion_swipe_refresh_layout);
-        mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-        });
+            mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_promotion_swipe_refresh_layout);
+            mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshContent();
+                }
+            });
 
-        scanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            scanButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 //                Snackbar.make(rootView.findViewById((R.id.coordinator)), "Something wrong", Snackbar.LENGTH_LONG).show();
 
-                Intent intent = new Intent(getActivity(), QRcodeScanner.class);
-                startActivity(intent);
-            }
-        });
+                    Intent intent = new Intent(getActivity(), QRcodeScanner.class);
+                    startActivity(intent);
+                }
+            });
 
-        ProgressDialog dialog = new ProgressDialog(getActivity());
-        dialog.setMessage("Loading List...");
-        dialog.setCancelable(false);
-        dialog.setInverseBackgroundForced(false);
-        dialog.show();
-        PromotionsListASYNC loginTask = new PromotionsListASYNC();
-        loginTask.execute(MyApplication.getUser().getToken());
-        dialog.dismiss();
+            ProgressDialog dialog = new ProgressDialog(getActivity());
+            dialog.setMessage("Loading List...");
+            dialog.setCancelable(false);
+            dialog.setInverseBackgroundForced(false);
+            dialog.show();
+            PromotionsListASYNC loginTask = new PromotionsListASYNC();
+            loginTask.execute(MyApplication.getUser().getToken());
+            dialog.dismiss();
+        } else {
+            scanButton.setVisibility(View.INVISIBLE);
+
+
+            final List<Promotion> allItems = new ArrayList<Promotion>();
+            SQLiteDatabase sqLiteDatabase;
+            sqLiteDatabase = getActivity().openOrCreateDatabase("db_Pmot", getActivity().MODE_PRIVATE, null);
+            Cursor resultSet = sqLiteDatabase.rawQuery("Select * from promotions, shops where promotions.shop_id = shops.id;", null);
+            System.out.println("====AAAA=================");
+
+            for(int i = 0; i < resultSet.getColumnCount(); i++) {
+                System.out.println(resultSet.getColumnName(i));
+            }
+
+            if (resultSet.moveToFirst()){
+                do{
+
+                    String name = resultSet.getString(resultSet.getColumnIndex("name"));
+                    System.out.println("====BBBB=================" + name);
+
+                    allItems.add(new Promotion(resultSet.getString(1), resultSet.getString(2), resultSet.getString(0), "", "", resultSet.getString(3), resultSet.getString(9), resultSet.getString(10),resultSet.getString(0), resultSet.getString(resultSet.getColumnIndex("starts_at")), resultSet.getString(resultSet.getColumnIndex("expires_at")), resultSet.getString(12)));
+
+
+                }while (resultSet.moveToNext());
+            }
+
+            Runnable run = new Runnable() {
+                @Override
+                public void run() {
+                    LinearLayoutManager lLayout = new LinearLayoutManager(getActivity());
+                    lLayout.setOrientation(LinearLayoutManager.VERTICAL);
+
+                    RecyclerView rView;
+                    if(getActivity() == null) {
+                        MainActivity main = new MainActivity();
+                        rView = (RecyclerView) main.findViewById(R.id.rv);
+                    } else {
+                        rView = (RecyclerView) getActivity().findViewById(R.id.rv);
+                        rView.setLayoutManager(lLayout);
+                    }
+
+                    PromotionRecyclerViewAdapter rcAdapter = new PromotionRecyclerViewAdapter(getActivity(), allItems);
+                    rView.setAdapter(rcAdapter);
+                }
+            };
+
+            Thread thr = new Thread(run);
+            thr.start();
+
+        }
 
         return rootView;
     }
@@ -163,22 +215,6 @@ public class OneFragment extends Fragment{
                                 getActivity().getApplicationContext());
 
                         System.out.println("INSERT INTO promotions (id, name, description, term_and_condition, starts_at, expires_at, shop_id) VALUES ("+jsnObj2.optInt("id")+", \""+jsnObj2.optString("pName")+"\", \""+jsnObj2.optString("description")+"\", \""+jsnObj2.optString("term_and_condition")+"\", \""+getDate(jsnObj2.optString("starts_at"))+"\", \""+getDate(jsnObj2.optString("expires_at"))+"\", "+jsnObj2.optInt("shop_id")+");");
-                    }
-
-                    SQLiteDatabase sqLiteDatabase;
-                    sqLiteDatabase = getActivity().openOrCreateDatabase("db_Pmot", getActivity().MODE_PRIVATE, null);
-                    Cursor resultSet = sqLiteDatabase.rawQuery("Select * from promotions;", null);
-                    System.out.println("====AAAA=================");
-
-
-                    if (resultSet.moveToFirst()){
-                        do{
-
-                            String name = resultSet.getString(resultSet.getColumnIndex("name"));
-                            System.out.println("====BBBB=================" + name);
-
-
-                        }while (resultSet.moveToNext());
                     }
 
                     LinearLayoutManager lLayout = new LinearLayoutManager(getActivity());

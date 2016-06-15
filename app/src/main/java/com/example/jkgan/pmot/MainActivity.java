@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void run() {
                                     runOnUiThread(new Runnable() {
                                         public void run() {
-                                            Toast.makeText(getApplicationContext(),"Send Selected",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(),"Shop Selected",Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(MainActivity.this, SubscribeShopsActivity.class);
 //                                intent.putExtra("TOKEN", TOKEN);
                                             startActivity(intent);
