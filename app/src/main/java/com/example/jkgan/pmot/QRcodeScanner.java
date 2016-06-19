@@ -184,10 +184,10 @@ public class QRcodeScanner extends AppCompatActivity {
                     if(scanResult.contains("Pmot@")) {
                         releaseCamera();
                         String str = scanResult.substring(5);
-                        CheckASYNC loginTask = new CheckASYNC();
+                        CheckASYNC scanTask = new CheckASYNC();
 
                         MyApplication appState = ((MyApplication) getApplicationContext());
-                        loginTask.execute(str, appState.getUser().getToken());
+                        scanTask.execute(str, appState.getUser().getToken());
                     } else
                         showAlertDialog(scanResult);
 

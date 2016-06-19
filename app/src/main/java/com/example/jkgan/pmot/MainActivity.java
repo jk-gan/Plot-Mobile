@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,7 +20,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -47,44 +45,25 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    private ProgressBar mRegistrationProgressBar;
+//    private ProgressBar mRegistrationProgressBar;
 
-    SQLiteDatabase sqLiteDatabase;
+//    SQLiteDatabase sqLiteDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        PmotDB db = new PmotDB(getApplicationContext());
-//        db.fnRunSQL("INSERT INTO users (id, name, email) VALUES (7, 'James', 'z.mike0411@gmail.com');",
-//                getApplicationContext());
-//        db.fnRunSQL("INSERT INTO users (id, name, email) VALUES (8, 'James 2', 'z.mike0411@gmail.com');",
-//                getApplicationContext());
-
-//        sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
-//        Cursor resultSet = sqLiteDatabase.rawQuery("Select * from users;", null);
-//
-//        if (resultSet.moveToFirst()){
-//            do{
-//
-//                String name = resultSet.getString(resultSet.getColumnIndex("name"));
-//                System.out.println("=====================" + name);
-//
-//
-//            }while (resultSet.moveToNext());
-//        }
-
         if(MyApplication.getUser() == null) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
         } else {
-            mRegistrationProgressBar = (ProgressBar) findViewById(R.id.registrationProgressBar);
+//            mRegistrationProgressBar = (ProgressBar) findViewById(R.id.registrationProgressBar);
             mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
+//                    mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
                     SharedPreferences sharedPreferences =
                             PreferenceManager.getDefaultSharedPreferences(context);
                     boolean sentToken = sharedPreferences
@@ -119,18 +98,18 @@ public class MainActivity extends AppCompatActivity {
             txtEmail.setText(MyApplication.getUser().getEmail());
 
             final ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
-            setupViewPager(viewPager);
+//            setupViewPager(viewPager);
+//
+//            final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+//            tabLayout.setupWithViewPager(viewPager);
 
-            final TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-            tabLayout.setupWithViewPager(viewPager);
 
-
-            OneFragment fragment = new OneFragment();
+            PromotionsListFragment fragment = new PromotionsListFragment();
             android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.frame,fragment);
 
             // Remove the tab
-            tabLayout.setVisibility(View.GONE);
+//            tabLayout.setVisibility(View.GONE);
             viewPager.setVisibility(View.GONE);
 
             fragmentTransaction.commit();
@@ -175,13 +154,13 @@ public class MainActivity extends AppCompatActivity {
 
                         case R.id.home:
                             Toast.makeText(getApplicationContext(), "Home Selected", Toast.LENGTH_SHORT).show();
-                            OneFragment fragment1 = new OneFragment();
+                            PromotionsListFragment fragment1 = new PromotionsListFragment();
                             android.support.v4.app.FragmentTransaction fragmentTransaction1 = getSupportFragmentManager().beginTransaction();
                             fragmentTransaction1.replace(R.id.frame,fragment1);
 
                             // Remove the tab
-                            tabLayout.setVisibility(View.GONE);
-                            viewPager.setVisibility(View.GONE);
+//                            tabLayout.setVisibility(View.GONE);
+//                            viewPager.setVisibility(View.GONE);
 
                             fragmentTransaction1.commit();
                             return true;
@@ -243,7 +222,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDrawerOpened(View drawerView) {
                     // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-
                     super.onDrawerOpened(drawerView);
                 }
             };
@@ -256,43 +234,42 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new OneFragment(), "ONE");
-//        adapter.addFragment(new TwoFragment(), "TWO");
-        viewPager.setAdapter(adapter);
-    }
-
-
-    class ViewPagerAdapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-        public ViewPagerAdapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
+//
+//    private void setupViewPager(ViewPager viewPager) {
+//        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+//        adapter.addFragment(new PromotionsListFragment(), "PROMOTIONS");
+//        viewPager.setAdapter(adapter);
+//    }
+//
+//
+//    class ViewPagerAdapter extends FragmentPagerAdapter {
+//        private final List<Fragment> mFragmentList = new ArrayList<>();
+//        private final List<String> mFragmentTitleList = new ArrayList<>();
+//
+//        public ViewPagerAdapter(FragmentManager manager) {
+//            super(manager);
+//        }
+//
+//        @Override
+//        public Fragment getItem(int position) {
+//            return mFragmentList.get(position);
+//        }
+//
+//        @Override
+//        public int getCount() {
+//            return mFragmentList.size();
+//        }
+//
+//        public void addFragment(Fragment fragment, String title) {
+//            mFragmentList.add(fragment);
+//            mFragmentTitleList.add(title);
+//        }
+//
+//        @Override
+//        public CharSequence getPageTitle(int position) {
+//            return mFragmentTitleList.get(position);
+//        }
+//    }
 
 
 
@@ -309,9 +286,6 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
-    /**
-     * Vérifier si notre utilisateur a l'application Google Play Service
-     */
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {

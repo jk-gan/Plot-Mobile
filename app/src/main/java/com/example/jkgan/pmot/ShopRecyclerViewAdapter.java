@@ -11,12 +11,12 @@ import com.example.jkgan.pmot.Shops.Shop;
 
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
+public class ShopRecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewHolders> {
 
     private List<Shop> itemList;
     private Context context;
 
-    public RecyclerViewAdapter(Context context, List<Shop> itemList) {
+    public ShopRecyclerViewAdapter(Context context, List<Shop> itemList) {
         this.itemList = itemList;
         this.context = context;
     }

@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.example.jkgan.pmot.Http.HttpRequest;
-import com.example.jkgan.pmot.Shops.Promotion;
 import com.example.jkgan.pmot.Shops.Shop;
 
 public class SubscribeShopsActivity extends AppCompatActivity {
@@ -48,22 +47,12 @@ public class SubscribeShopsActivity extends AppCompatActivity {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
 
-        if(MyApplication.isNetworkAvailable(this)) {
-
-            ShopsListASYNC loginTask = new ShopsListASYNC();
-            loginTask.execute(MyApplication.getUser().getToken());
-
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(MyApplication.isNetworkAvailable(getApplication())) {
                     refreshContent();
-                }
-            });
-        } else {
-
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
+                } else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -71,25 +60,44 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                             mSwipeRefreshLayout.setRefreshing(false);
                         }
                     }, 2200);
-
                 }
-            });
+            }
+        });
+
+        if(MyApplication.isNetworkAvailable(this)) {
+
+            ShopsListASYNC loginTask = new ShopsListASYNC();
+            loginTask.execute(MyApplication.getUser().getToken());
+
+//            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                @Override
+//                public void onRefresh() {
+//                    refreshContent();
+//                }
+//            });
+        } else {
+
+//            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                @Override
+//                public void onRefresh() {
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Snackbar.make(findViewById((R.id.subscribe_shop_layout)), "Unable to refresh", Snackbar.LENGTH_LONG).show();
+//                            mSwipeRefreshLayout.setRefreshing(false);
+//                        }
+//                    }, 2200);
+//
+//                }
+//            });
 
             List<Shop> allItems = new ArrayList<Shop>();
             SQLiteDatabase sqLiteDatabase;
             sqLiteDatabase = openOrCreateDatabase("db_Pmot", MODE_PRIVATE, null);
             Cursor resultSet = sqLiteDatabase.rawQuery("Select * from shops;", null);
-            System.out.println("====AAAA=================");
-
-            for(int i = 0; i < resultSet.getColumnCount(); i++) {
-                System.out.println(resultSet.getColumnName(i));
-            }
 
             if (resultSet.moveToFirst()){
                 do{
-
-                    String name = resultSet.getString(resultSet.getColumnIndex("name"));
-                    System.out.println("====BBBB=================" + name);
 
                     allItems.add(new Shop(resultSet.getString(resultSet.getColumnIndex("name")), resultSet.getString(resultSet.getColumnIndex("address")), resultSet.getString(resultSet.getColumnIndex("id")), "", "", resultSet.getString(resultSet.getColumnIndex("phone")), resultSet.getString(resultSet.getColumnIndex("description"))));
 
@@ -103,7 +111,7 @@ public class SubscribeShopsActivity extends AppCompatActivity {
             RecyclerView rView = (RecyclerView)findViewById(R.id.recycler_view);
             rView.setLayoutManager(lLayout);
 
-            RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(SubscribeShopsActivity.this, allItems);
+            ShopRecyclerViewAdapter rcAdapter = new ShopRecyclerViewAdapter(SubscribeShopsActivity.this, allItems);
             rView.setAdapter(rcAdapter);
         }
 
@@ -113,7 +121,7 @@ public class SubscribeShopsActivity extends AppCompatActivity {
 //        RecyclerView rView = (RecyclerView)findViewById(R.id.recycler_view);
 //        rView.setLayoutManager(lLayout);
 
-//        RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(SubscribeShopsActivity.this, rowListItem);
+//        ShopRecyclerViewAdapter rcAdapter = new ShopRecyclerViewAdapter(SubscribeShopsActivity.this, rowListItem);
 //        rView.setAdapter(rcAdapter);
     }
 
@@ -195,7 +203,7 @@ public class SubscribeShopsActivity extends AppCompatActivity {
                     RecyclerView rView = (RecyclerView)findViewById(R.id.recycler_view);
                     rView.setLayoutManager(lLayout);
 
-                    RecyclerViewAdapter rcAdapter = new RecyclerViewAdapter(SubscribeShopsActivity.this, allItems);
+                    ShopRecyclerViewAdapter rcAdapter = new ShopRecyclerViewAdapter(SubscribeShopsActivity.this, allItems);
                     rView.setAdapter(rcAdapter);
 
 

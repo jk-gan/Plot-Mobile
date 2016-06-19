@@ -16,7 +16,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,17 +34,15 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 
-public class OneFragment extends Fragment{
+public class PromotionsListFragment extends Fragment{
     SwipeRefreshLayout mSwipeRefreshLayout;
     FloatingActionButton scanButton;
     PmotDB db;
 
-    public OneFragment() {
+    public PromotionsListFragment() {
         // Required empty public constructor
     }
 
@@ -60,30 +57,57 @@ public class OneFragment extends Fragment{
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View rootView = inflater.inflate(R.layout.fragment_one,container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_promotions_list,container, false);
         scanButton = (FloatingActionButton) rootView.findViewById(R.id.fab);
         mSwipeRefreshLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.activity_promotion_swipe_refresh_layout);
         mSwipeRefreshLayout.setColorSchemeResources(R.color.orange, R.color.green, R.color.blue);
         db = new PmotDB(getActivity().getApplicationContext());
 
-        if(MyApplication.isNetworkAvailable(getActivity())) {
-
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if(MyApplication.isNetworkAvailable(getActivity())) {
                     refreshContent();
+                } else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(getActivity().findViewById((R.id.coordinator)), "Unable to refresh", Snackbar.LENGTH_LONG).show();
+                            mSwipeRefreshLayout.setRefreshing(false);
+                        }
+                    }, 2200);
                 }
-            });
+            }
+        });
 
-            scanButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-//                Snackbar.make(rootView.findViewById((R.id.coordinator)), "Something wrong", Snackbar.LENGTH_LONG).show();
-
+        scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(MyApplication.isNetworkAvailable(getActivity())) {
                     Intent intent = new Intent(getActivity(), QRcodeScanner.class);
                     startActivity(intent);
+                } else {
+                    Snackbar.make(rootView.findViewById((R.id.coordinator)), "Unable to scan in offline", Snackbar.LENGTH_LONG).show();
                 }
-            });
+            }
+        });
+
+        if(MyApplication.isNetworkAvailable(getActivity())) {
+
+//            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                @Override
+//                public void onRefresh() {
+//                    refreshContent();
+//                }
+//            });
+//
+//            scanButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Intent intent = new Intent(getActivity(), QRcodeScanner.class);
+//                    startActivity(intent);
+//                }
+//            });
 
             ProgressDialog dialog = new ProgressDialog(getActivity());
             dialog.setMessage("Loading List...");
@@ -138,24 +162,24 @@ public class OneFragment extends Fragment{
 
             Toast.makeText(getContext(), "Image can't be showed due to no internet connection", Toast.LENGTH_SHORT).show();
 //            scanButton.setVisibility(View.INVISIBLE);
-            scanButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                Snackbar.make(rootView.findViewById((R.id.coordinator)), "Unable to scan in offline", Snackbar.LENGTH_LONG).show();
-                }
-            });
-            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-                @Override
-                public void onRefresh() {
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(getActivity().findViewById((R.id.coordinator)), "Unable to refresh", Snackbar.LENGTH_LONG).show();
-                            mSwipeRefreshLayout.setRefreshing(false);
-                        }
-                    }, 2200);
-                }
-            });
+//            scanButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                Snackbar.make(rootView.findViewById((R.id.coordinator)), "Unable to scan in offline", Snackbar.LENGTH_LONG).show();
+//                }
+//            });
+//            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//                @Override
+//                public void onRefresh() {
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Snackbar.make(getActivity().findViewById((R.id.coordinator)), "Unable to refresh", Snackbar.LENGTH_LONG).show();
+//                            mSwipeRefreshLayout.setRefreshing(false);
+//                        }
+//                    }, 2200);
+//                }
+//            });
 
 
             final List<Promotion> allItems = new ArrayList<Promotion>();

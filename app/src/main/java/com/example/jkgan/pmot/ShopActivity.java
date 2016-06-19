@@ -144,7 +144,6 @@ public class ShopActivity extends AppCompatActivity {
                             public void run() {
                                 dialog.dismiss();
                                 Snackbar.make(findViewById((R.id.shopLayout)), "Subscribed to the shop", Snackbar.LENGTH_LONG).show();
-
                             }
                         });
                     }
@@ -152,7 +151,7 @@ public class ShopActivity extends AppCompatActivity {
 
             } else {
                 dialog.dismiss();
-                Snackbar.make(findViewById((R.id.shopLayout)), "Something wrong", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(findViewById((R.id.shopLayout)), "You had subscribed the shop", Snackbar.LENGTH_LONG).show();
             }
         }
 
